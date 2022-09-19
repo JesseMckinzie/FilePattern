@@ -38,7 +38,10 @@ class ExternalPattern : public Pattern {
         std::string fp_tmpdir_;
         bool first_call_; // True if first call has not been made to next()
         Tuple temp_;
+        bool matching_init_ = false;
         // end to be changed to private
+
+        void getMatchingInit(const std::vector<std::tuple<std::string, std::vector<Types>>>& variables);
     
     protected:
         long getBlockSize(); // Max amount of main memory to use at a time
@@ -128,7 +131,7 @@ class ExternalPattern : public Pattern {
          * @param variables Variables with value to match (ex. "x=1, y=2")
          * @return std::vector<Tuple> Vector of files where the variable(s) match the value.
          */
-        std::string getMatching(const std::vector<std::tuple<std::string, std::vector<Types>>>& variables);
+        std::vector<Tuple> getMatching(const std::vector<std::tuple<std::string, std::vector<Types>>>& variables);
 
         /**
          * @brief Returns a block of files after a call to getMatching where the block of files
@@ -204,7 +207,7 @@ class ExternalPattern : public Pattern {
          * @param block_size Maximum amount of memory to consume
          * @return std::string A guess of the pattern
          */
-        static std::string inferPattern(const std::string& path, std::string& variables, const std::string& block_size);
+        std::string inferPattern(const std::string& path, std::string& variables, const std::string& block_size);
 
         /**
          * @brief Returns the length of the current group of files

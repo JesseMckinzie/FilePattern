@@ -3,12 +3,14 @@
 
 using namespace std;
 
-FilePattern::FilePattern(const string& path, const string& file_pattern, bool recursive, bool suppress_warnings) {
-
+FilePatternObject::FilePatternObject(const string& path, const string& file_pattern, bool recursive, bool suppress_warnings) {
+    std::cout << "constructor" << std::endl;
     this->setSuppressWarnings(suppress_warnings);
 
     if(file_pattern == ""){
+
         this->getPathFromPattern(path); // set path and file_pattern
+        
         try {
             this->recursive_iterator_ = fs::recursive_directory_iterator(this->getPath());
             this->recursive_ = true;
@@ -17,11 +19,15 @@ FilePattern::FilePattern(const string& path, const string& file_pattern, bool re
             string error = "No directory found. Invalid path \"" + path + "\"."; 
             throw std::runtime_error(error);
         }
+        std::cout << "constructor2" << std::endl;
     } else {
+
+        std::cout << "constructor3" << std::endl;
         this->setJustPath(false);
         this->setPath(path); // store path to target directory
         this->setFilePattern(file_pattern); // cast input string to regex
         this->recursive_ = recursive; // Iterate over subdirectories
+        std::cout << "constructor4" << std::endl;
         try {
             if(recursive){
                 this->recursive_iterator_ = fs::recursive_directory_iterator(this->getPath());
@@ -33,21 +39,23 @@ FilePattern::FilePattern(const string& path, const string& file_pattern, bool re
             throw std::runtime_error(error);
         }
     }
-    
+    std::cout << "constructor5" << std::endl;
     this->setRegexFilePattern(""); // Regex version of pattern
-    
+    std::cout << "constructor6" << std::endl;
 
     this->matchFiles();
+    std::cout << "constructor7" << std::endl;
     this->sortFiles();
+    std::cout << "at end of constructor" << std::endl;
 }
 
-void FilePattern::printFiles(){
+void FilePatternObject::printFiles(){
     for(const auto& file: this->iterator_){
         //cout << file << endl;
     }
 }
 
-void FilePattern::matchFilesOneDir(){
+void FilePatternObject::matchFilesOneDir(){
     Map mapping;
     vector<string> parsed_regex;
 
@@ -74,7 +82,7 @@ void FilePattern::matchFilesOneDir(){
     */
 }
 
-void FilePattern::matchFilesMultDir(){
+void FilePatternObject::matchFilesMultDir(){
     // Iterate over every file in directory
     regex pattern_regex = regex(this->getRegexFilePattern());
     Tuple tup;
@@ -100,13 +108,15 @@ void FilePattern::matchFilesMultDir(){
     }
 }
 
-void FilePattern::matchFiles() {
-    
+void FilePatternObject::matchFiles() {
+    std::cout << "1" << std::endl;
     filePatternToRegex(); // Get regex of filepattern
-
+    std::cout << "2" << std::endl;
     if(this->recursive_){
+        std::cout << "3" << std::endl;
        this->matchFilesMultDir();
     } else {
+        std::cout << "4" << std::endl;
         this->matchFilesOneDir();
     }
 }

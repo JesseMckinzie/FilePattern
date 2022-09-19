@@ -2,6 +2,10 @@
 #include <pybind11/stl.h>
 #include <pybind11/operators.h>
 #include <iostream>
+
+#include "interface/filepattern.h"
+
+/*
 #include "pattern.hpp"
 #include "internal/internal_pattern.hpp"
 #include "internal/filepattern.hpp"
@@ -11,7 +15,7 @@
 #include "external/external_filepattern.hpp"
 #include "external/external_stringpattern.hpp"
 #include "external/external_vectorpattern.hpp"
-
+*/
 
 namespace py = pybind11;
 
@@ -19,6 +23,19 @@ namespace py = pybind11;
 
 PYBIND11_MODULE(backend, m){
 
+    py::class_<FilePattern>(m, "FilePattern")
+        .def(py::init<const std::string &, const std::string &, const std::string&, bool, bool>())
+        .def("getMatching", &FilePattern::getMatching)
+        .def("getOccurrences", &FilePattern::getOccurrences)
+        .def("getUniqueValues", &FilePattern::getUniqueValues)
+        .def("outputName", &FilePattern::outputName)
+        .def("getVariables", &FilePattern::getVariables)
+        .def("getNewNaming", &FilePattern::getNewNaming)
+        .def("swSearch", &FilePattern::swSearch);
+    
+
+
+    /*
     py::class_<Pattern>(m, "Pattern")
         .def("filePatternToRegex", &Pattern::filePatternToRegex)
         .def("getPattern", &Pattern::getPattern)
@@ -30,7 +47,7 @@ PYBIND11_MODULE(backend, m){
         .def("getUniqueValues", &Pattern::getUniqueValues)
         .def("getTmpDirs", &Pattern::getTmpDirs)
         .def("setGroup", &Pattern::setGroup)
-        .def_static("getRegex", &Pattern::getRegex)
+        .def("getRegex", &Pattern::getRegex)
         .def_readonly("group", &Pattern::group_)
         .def_readonly("validFiles", &Pattern::valid_files_)
         .def("__iter__", [](const Pattern &v){
@@ -50,13 +67,13 @@ PYBIND11_MODULE(backend, m){
         .def("getItem", &InternalPattern::getItem)
         .def("getSlice", &InternalPattern::getSlice)
         .def("getItemList", &InternalPattern::getItemList)
-        .def_static("inferPattern", py::overload_cast<std::vector<std::string>&, std::string&>(&InternalPattern::inferPattern))
-        .def_static("inferPattern", py::overload_cast<const std::string&, std::string&>(&InternalPattern::inferPattern));
+        .def("inferPattern", py::overload_cast<std::vector<std::string>&, std::string&>(&InternalPattern::inferPattern))
+        .def("inferPattern", py::overload_cast<const std::string&, std::string&>(&InternalPattern::inferPattern));
 
-    py::class_<FilePattern, InternalPattern>(m, "FilePattern")
+    py::class_<FilePatternObject, InternalPattern>(m, "FilePattern")
         .def(py::init<const std::string &, const std::string &, bool, bool>())
-        .def("matchFiles", &FilePattern::matchFiles)
-        .def("printFiles", &FilePattern::printFiles);
+        .def("matchFiles", &FilePatternObject::matchFiles)
+        .def("printFiles", &FilePatternObject::printFiles);
 
     py::class_<StringPattern, InternalPattern>(m, "StringPattern")
         .def(py::init<const std::string &, const std::string &, bool>())
@@ -104,11 +121,11 @@ PYBIND11_MODULE(backend, m){
 
     py::class_<VectorPattern, InternalPattern>(m, "InternalVectorPattern")
         .def(py::init<const std::string&, const std::string&, bool>())
-        .def_static("inferPattern", &VectorPattern::inferPattern);
+        .def("inferPattern", &VectorPattern::inferPattern);
 
     py::class_<ExternalVectorPattern, ExternalPattern>(m, "ExternalVectorPattern")
         .def(py::init<const std::string&, const std::string&, const std::string&, bool>())
-        .def_static("inferPattern", &ExternalVectorPattern::inferPattern);
+        .def("inferPattern", &ExternalVectorPattern::inferPattern);
 
-    
+    */
 }

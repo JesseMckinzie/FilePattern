@@ -1,5 +1,5 @@
 /**
- * @file FilePattern.hpp
+ * @file FilePatternObject.hpp
  * @author Jesse McKinzie (Jesse.McKinzie@axleinfo.com)
  * @brief 
  * @version 0.1
@@ -13,9 +13,9 @@
 
 namespace fs = std::filesystem;
 
-class FilePattern : public InternalPattern {
+class FilePatternObject : public InternalPattern {
     public:
-        FilePattern(const std::string& path, const std::string& pattern, bool recursive=false, bool suppress_warnings=false);
+        FilePatternObject(const std::string& path, const std::string& pattern, bool recursive=false, bool suppress_warnings=false);
 
         /**
          * @brief Match files in directory to the pattern

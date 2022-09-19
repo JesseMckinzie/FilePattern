@@ -19,8 +19,11 @@
 #include <set>
 #include "util/fs_stream.hpp"
 #include "util/util.hpp"
-class Pattern {
+#include "pattern_object.hpp"
+
+class Pattern : public PatternObject {
     private:
+    
         std::regex regex_expression_; // Regex expression
         std::string file_pattern_; // Pattern to match files to
         std::string path_pattern_;
@@ -61,22 +64,12 @@ class Pattern {
          * @param startingPattern Initial pattern. Optional. Used for external memory version
          * @return std::string Guess of the pattern
          */
-        static std::string inferPatternInternal(std::vector<std::string>& files, std::string& variables, const std::string& startingPattern="");
+        std::string inferPatternInternal(std::vector<std::string>& files, std::string& variables, const std::string& startingPattern="");
         
         void getPathFromPattern(const std::string& path);
 
     public:
-        std::vector<Tuple> valid_files_; // Store files that match given regex
         
-        std::vector<std::pair<std::vector<std::pair<std::string, Types>> , std::vector<Tuple>>> valid_grouped_files_; // 2D vector to store grouped files
-        std::vector<std::string> group_; // current groupBy variable
-
-        std::vector<std::string> variables_; // Store the names of variables from the pattern
-        std::map<std::string, std::map<Types, int>> variable_occurrences_; // store the number of times a variable value occurs
-        std::map<std::string, std::set<Types>> unique_values_; // store each unique value for every variable
-
-        std::vector<std::string> named_groups_;
-        std::vector<std::string> tmp_directories_; // store paths to all temporary directories used
 
         /**
          * @brief Convert to pattern to regex and update class variables from the returned 
@@ -96,7 +89,7 @@ class Pattern {
          * @return std::tuple<std::string, std::vector<std::string>, std::vector<std::string>> Tuple containing the
          * the regex version of the file pattern, the variables found, and the named groups.
          */
-        static std::tuple<std::string, std::vector<std::string>, std::vector<std::string>> getRegex(std::string& pattern, bool suppressWarning=false);
+        std::tuple<std::string, std::vector<std::string>, std::vector<std::string>> getRegex(std::string& pattern, bool suppressWarning=false);
 
         /**
          * @brief Get the mapping of variables to values for a matching file. Used with a recursive directory iterator. 
@@ -188,7 +181,7 @@ class Pattern {
          * 
          * @param pattern Pattern to get the new naming style of.
          */
-        static void getNewNaming(std::string& pattern, bool suppressWarnings);
+        void getNewNaming(std::string& pattern, bool suppressWarnings);
 
         /**
          * @brief Main loop of outputName. Finds the output name for a vector of files.
@@ -235,7 +228,7 @@ class Pattern {
          * @param variables 
          * @return std::string 
          */
-        static std::string swSearch(std::string& pattern, std::string& filename, const std::string& variables);
+        std::string swSearch(std::string& pattern, std::string& filename, const std::string& variables);
 
         /**
          * @brief Returns paths to all the temporary directories used in external memory classes.

@@ -41,19 +41,25 @@ vector<string> Pattern::getVariables(){
 }
 
 void Pattern::filePatternToRegex(){
+    cout << "0.1" << endl;
     replace(path_.begin(), path_.end(), '\\', '/');
+    cout << "0.2" << endl;
     replace(file_pattern_.begin(), file_pattern_.end(), '\\', '/');
-
+    cout << "0.3" << endl;
     tuple vars = getRegex(this->file_pattern_, this->suppress_warnings_);
+    cout << "0.4" << endl;
     this->regex_file_pattern_ = get<0>(vars);
+    cout << "0.5" << endl;
     this->variables_ = get<1>(vars);
+    cout << "0.6" << endl;
     this->named_groups_ = get<2>(vars);
+    cout << "0.7" << endl;
 }
 
 tuple<string, vector<string>, vector<string>> Pattern::getRegex(string& pattern, bool suppressWarning){
-    
+    cout << "0.01" << endl;
     getNewNaming(pattern, suppressWarning);
-
+    cout << "0.02" << endl;
     // regex to match variables
     std::regex e("(\\{(\\w+):([dc+]+)\\})|(\\(P\\?<(\\w+)>(.+)\\))"); // check for bracket expressions or named groups
     std::regex group("\\P\\?<(\\w+)>(.+)"); // check for regex named groups
@@ -71,6 +77,7 @@ tuple<string, vector<string>, vector<string>> Pattern::getRegex(string& pattern,
     std::smatch sm, m; // regex matches
 
     string temp;
+    cout << "this1" << endl;
     // extract bracket expressions from pattern and store regex
     while (regex_search(patternCopy, m, e)){
         temp = m[0];
@@ -99,10 +106,10 @@ tuple<string, vector<string>, vector<string>> Pattern::getRegex(string& pattern,
                 temp = sm.suffix().str();
             }
         }
-
+        cout << "this2" << endl;
         patternCopy = m.suffix().str();
     }
-
+    cout << "this3" << endl;
     string regexFilePattern = pattern;
     vector<string> namedGroups;
 
@@ -114,7 +121,7 @@ tuple<string, vector<string>, vector<string>> Pattern::getRegex(string& pattern,
         str = "(" + match.second + ")";
         s::replace(regexFilePattern, match.first, str);
     }
-
+    cout << "this4" << endl;
     return make_tuple(regexFilePattern, variables, namedGroups);
 }
 
@@ -228,7 +235,7 @@ map<string, set<Types>> Pattern::getUniqueValues(const vector<string>& vec){
 
 
 void Pattern::getNewNaming(string& pattern, bool suppressWarnings){
-    
+    if(pattern == "") return;
     string vars = "\\{([rtczyxp+]+)\\}"; // check for old naming style or named grouped
 
     std::regex e(vars);
@@ -239,6 +246,7 @@ void Pattern::getNewNaming(string& pattern, bool suppressWarnings){
     std::smatch m; // regex matches
     bool replaced = false;
     // extract bracket expressions from pattern and store regex
+    cout << "before loop" << endl;
     while (regex_search(patternCopy, m, e)){
         str = m[1];
 
@@ -248,7 +256,7 @@ void Pattern::getNewNaming(string& pattern, bool suppressWarnings){
         patternCopy = m.suffix().str(); 
         
     }
-
+    cout << "middle" << endl;
     // Replace bracket groups with regex capture groups
     for(const auto& match: matches){
         // Create capture group

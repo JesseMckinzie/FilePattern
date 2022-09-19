@@ -1,6 +1,7 @@
 from . import backend
 import re, pathlib
 
+
 class PatternObject:
     def __init__(self, file_pattern, block_size):
         self._file_pattern = file_pattern
@@ -214,10 +215,41 @@ class FilePattern(PatternObject):
             recursive: Iterate over subdirectories. Defaults to False.
         """
 
-       
+        
         path = str(path) # change path type to string to support pathlib paths
         
-        self._file_pattern = backend.FilePattern(path, pattern, block_size, recursive, suppress_warnings)
+        if path.endswith(".txt"):
+
+            with open(path) as infile:
+                line = infile.readline().rstrip()
+
+            if re.match(r"file\: .+?; corr\: .+?; position\: .+?; grid\: .+?;", line):
+                if block_size == "":
+                    self._file_pattern = backend.InternalVectorPattern(path, pattern, suppress_warnings)
+                else:
+                    self._file_pattern = backend.ExternalVectorPattern(
+                        path, pattern, block_size, suppress_warnings
+                    )
+                # self._file_pattern = backend.InternalVectorPattern(path, pattern) if block_size == '' \
+                #                    else backend.ExternalVectorPattern(path, pattern, block_size=block_size)
+            else:
+                if block_size == "":
+                    self._file_pattern = backend.StringPattern(path, pattern, suppress_warnings)
+                else:
+                    self._file_pattern = backend.ExternalStringPattern(
+                        path, pattern, block_size, suppress_warnings
+                    )
+                # self._file_pattern = backend.StringPattern(path, pattern) if block_size == '' \
+                #                    else backend.ExternalStringPattern(path, pattern, block_size=block_size)
+        else:
+            if block_size == "":
+                self._file_pattern = backend.FilePattern(path, pattern, recursive, suppress_warnings)
+            else:
+                self._file_pattern = backend.ExternalFilePattern(
+                    path, pattern, block_size, recursive, suppress_warnings
+                )
+            # self._file_pattern = backend.FilePattern(path, pattern, recursive) if block_size == '' \
+            #                    else backend.ExternalFilePattern(path, pattern, recursive = recursive, block_size=block_size)
 
         super().__init__(self._file_pattern, block_size)
 

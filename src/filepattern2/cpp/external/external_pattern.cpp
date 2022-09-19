@@ -82,8 +82,7 @@ void ExternalPattern::getMatchingHelper(const tuple<string, vector<Types>>& vari
     }
 }
 
-string ExternalPattern::getMatching(const vector<tuple<string, vector<Types>>>& variables){
-
+void ExternalPattern::getMatchingInit(const vector<tuple<string, vector<Types>>>& variables) {
     // construct temporary directory path
     this->fp_tmpdir_ = fs::temp_directory_path().string();
     if (s::endsWith(this->fp_tmpdir_, "\\")) this->fp_tmpdir_.pop_back();
@@ -115,7 +114,14 @@ string ExternalPattern::getMatching(const vector<tuple<string, vector<Types>>>& 
 
     this->matching_stream_.open(this->matching_);
 
-    return this->matching_;
+    this->matching_init_ = true;
+}
+
+vector<Tuple> ExternalPattern::getMatching(const vector<tuple<string, vector<Types>>>& variables){
+
+    if (!matching_init_) this->getMatchingInit(variables);
+
+    return this->getMatchingBlock();
 }
 
 vector<Tuple> ExternalPattern::getMatchingBlock(){
@@ -140,6 +146,7 @@ vector<Tuple> ExternalPattern::getMatchingBlock(){
 
         if(!more_files) {
             this->matching_stream_.close();
+            this->matching_init_ = false;
             break;
         }
         vec.push_back(temp);

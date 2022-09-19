@@ -2,7 +2,7 @@ from . import backend
 import re
 
 def get_regex(filepattern: str, suppress_warnings=False) -> tuple:
-    result  = backend.Pattern.getRegex(filepattern, suppress_warnings)
+    result  = backend.FilePattern.getRegex(filepattern, suppress_warnings)
     return result[0:2]
 
 def infer_pattern(
@@ -23,7 +23,13 @@ def infer_pattern(
         raise ValueError("A path or list of files must be provided")
     elif path != "" and files != []:
         raise ValueError("Pass in only a path or list of files, not both.")
+    
+    if files == []:
+        return backend.FilePattern.inferPattern(path, variables, block_size)
+    else:
+        return backend.FilePattern.inferPattern(files, variables, block_size)
 
+    """
     if path.endswith(".txt"):
         with open(path) as infile:
             line = infile.readline().rstrip()
@@ -46,3 +52,4 @@ def infer_pattern(
         return backend.InternalPattern.inferPattern(files, variables)
     else:
         return backend.ExternalPattern.inferPattern(path, variables, block_size)
+    """

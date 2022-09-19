@@ -84,7 +84,7 @@ class InternalPattern : public Pattern {
          * @param variables Name of variables to use. Optional
          * @return std::string Guess of the pattern
          */
-        static std::string inferPattern(const std::string& path, std::string& variables);
+        std::string inferPattern(const std::string& path, std::string& variables);
         
         /**
          * @brief Returns the guess of a pattern given vector of filenames.
@@ -93,7 +93,7 @@ class InternalPattern : public Pattern {
          * @param variables Name of variables to use. Optional
          * @return std::string Guess of the pattern
          */
-        static std::string inferPattern(std::vector<std::string>& vec, std::string& variables);
+        std::string inferPattern(std::vector<std::string>& vec, std::string& variables);
 
 
 
