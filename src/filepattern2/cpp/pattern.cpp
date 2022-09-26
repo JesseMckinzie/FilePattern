@@ -41,29 +41,38 @@ vector<string> Pattern::getVariables(){
 }
 
 void Pattern::filePatternToRegex(){
-    cout << "0.1" << endl;
+
     replace(path_.begin(), path_.end(), '\\', '/');
-    cout << "0.2" << endl;
+
     replace(file_pattern_.begin(), file_pattern_.end(), '\\', '/');
-    cout << "0.3" << endl;
+
     tuple vars = getRegex(this->file_pattern_, this->suppress_warnings_);
-    cout << "0.4" << endl;
+        
     this->regex_file_pattern_ = get<0>(vars);
-    cout << "0.5" << endl;
     this->variables_ = get<1>(vars);
-    cout << "0.6" << endl;
     this->named_groups_ = get<2>(vars);
-    cout << "0.7" << endl;
+
 }
 
 tuple<string, vector<string>, vector<string>> Pattern::getRegex(string& pattern, bool suppressWarning){
-    cout << "0.01" << endl;
-    getNewNaming(pattern, suppressWarning);
-    cout << "0.02" << endl;
+    //cout << "0.01" << endl;
+    //getNewNaming(pattern, suppressWarning);
+    //cout << "0.02" << endl;
     // regex to match variables
-    std::regex e("(\\{(\\w+):([dc+]+)\\})|(\\(P\\?<(\\w+)>(.+)\\))"); // check for bracket expressions or named groups
-    std::regex group("\\P\\?<(\\w+)>(.+)"); // check for regex named groups
-    std::regex var("\\{(\\w+):([dc+]+)\\}"); // pattern style of groups (e.g {r:ddd})
+    std::string e_str = "(\\{(\\w+):([dc+]+)\\})|(\\(P\\?<(\\w+)>(.+)\\))";
+    std::regex e(e_str, regex_constants::ECMAScript); // check for bracket expressions or named groups
+    
+    //cout << "0.03" << endl;
+    std::string group_str = "\\?<(\\w+)>(.+)";
+    for (std::size_t i = 0; i < group_str.size(); ++i)
+    {
+        cout << bitset<8>(group_str.c_str()[i]) << endl;
+    }
+    std::regex group(group_str, regex_constants::ECMAScript); // check for regex named groups
+    //cout << "0.04" << endl;
+    std::string var_str = "\\{(\\w+):([dc+]+)\\}";
+    std::regex var(var_str, regex_constants::ECMAScript); // pattern style of groups (e.g {r:ddd})
+   // cout << "0.05" << endl;
 
     map<char, string> patternMap; // map of variable types to regex equivalent 
     patternMap['d'] = "[0-9]"; 
@@ -235,18 +244,24 @@ map<string, set<Types>> Pattern::getUniqueValues(const vector<string>& vec){
 
 
 void Pattern::getNewNaming(string& pattern, bool suppressWarnings){
+    //cout << "new1" << endl;
     if(pattern == "") return;
+   // std::cout << "pattern: " << pattern << std::endl;
+    //std::cout << "oooooooog" << std::endl;
     string vars = "\\{([rtczyxp+]+)\\}"; // check for old naming style or named grouped
-
+    //cout << "new2" << endl;
     std::regex e(vars);
-
+    //cout << "new3" << endl;
     string str; // temp string
+    //cout << "new4" << endl;
     vector<pair<string,string>> matches; // map between bracket expression and regex
+    //cout << "new5" << endl;
     string patternCopy = pattern; // get a copy of pattern since regex_search is inplace
+    //cout << "new6" << endl;
     std::smatch m; // regex matches
+    //cout << "new7" << endl;
     bool replaced = false;
     // extract bracket expressions from pattern and store regex
-    cout << "before loop" << endl;
     while (regex_search(patternCopy, m, e)){
         str = m[1];
 
@@ -256,7 +271,6 @@ void Pattern::getNewNaming(string& pattern, bool suppressWarnings){
         patternCopy = m.suffix().str(); 
         
     }
-    cout << "middle" << endl;
     // Replace bracket groups with regex capture groups
     for(const auto& match: matches){
         // Create capture group

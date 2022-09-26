@@ -37,6 +37,9 @@ class InternalPattern : public Pattern {
                              Types& temp);
     
     public:
+        void next();
+
+        void nextGroup();
 
         void sortFiles();
 
@@ -95,6 +98,6 @@ class InternalPattern : public Pattern {
          */
         std::string inferPattern(std::vector<std::string>& vec, std::string& variables);
 
-
+        int currentBlockLength();
 
 };

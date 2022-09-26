@@ -6,6 +6,8 @@
 
 class PatternObject {
     public:
+        bool external = false;
+
         std::vector<Tuple> valid_files_; // Store files that match given regex
         
         std::vector<std::pair<std::vector<std::pair<std::string, Types>> , std::vector<Tuple>>> valid_grouped_files_; // 2D vector to store grouped files
@@ -17,6 +19,10 @@ class PatternObject {
 
         std::vector<std::string> named_groups_;
         std::vector<std::string> tmp_directories_; // store paths to all temporary directories used
+
+        std::vector<Tuple> current_block_; // Store current block of files
+        //std::vector<std::pair<std::pair<std::string, Types>, std::vector<Tuple>>> currentGroup; //Store current block of grouped files
+        std::vector<std::pair<std::vector<std::pair<std::string, Types>> , std::vector<Tuple>>> current_group_;
 
         virtual std::vector<Tuple> getMatching(const std::vector<std::tuple<std::string, std::vector<Types>>>& variables) = 0;
 
@@ -30,7 +36,16 @@ class PatternObject {
        
         virtual void getNewNaming(std::string& pattern, bool suppressWarnings) = 0;
 
+        virtual void next() = 0;
+
+        virtual void nextGroup() = 0;
+
+        virtual int currentBlockLength() = 0;
+
+        virtual void setGroup(const std::vector<std::string>& groups) = 0;
+
         virtual std::string swSearch(std::string& pattern, std::string& filename, const std::string& variables) = 0;
+
 };
 
  

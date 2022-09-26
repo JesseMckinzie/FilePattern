@@ -4,7 +4,7 @@
 using namespace std;
 
 FilePatternObject::FilePatternObject(const string& path, const string& file_pattern, bool recursive, bool suppress_warnings) {
-    std::cout << "constructor" << std::endl;
+
     this->setSuppressWarnings(suppress_warnings);
 
     if(file_pattern == ""){
@@ -19,15 +19,14 @@ FilePatternObject::FilePatternObject(const string& path, const string& file_patt
             string error = "No directory found. Invalid path \"" + path + "\"."; 
             throw std::runtime_error(error);
         }
-        std::cout << "constructor2" << std::endl;
+
     } else {
 
-        std::cout << "constructor3" << std::endl;
         this->setJustPath(false);
         this->setPath(path); // store path to target directory
         this->setFilePattern(file_pattern); // cast input string to regex
         this->recursive_ = recursive; // Iterate over subdirectories
-        std::cout << "constructor4" << std::endl;
+
         try {
             if(recursive){
                 this->recursive_iterator_ = fs::recursive_directory_iterator(this->getPath());
@@ -39,14 +38,11 @@ FilePatternObject::FilePatternObject(const string& path, const string& file_patt
             throw std::runtime_error(error);
         }
     }
-    std::cout << "constructor5" << std::endl;
+
     this->setRegexFilePattern(""); // Regex version of pattern
-    std::cout << "constructor6" << std::endl;
 
     this->matchFiles();
-    std::cout << "constructor7" << std::endl;
     this->sortFiles();
-    std::cout << "at end of constructor" << std::endl;
 }
 
 void FilePatternObject::printFiles(){
@@ -66,6 +62,7 @@ void FilePatternObject::matchFilesOneDir(){
     // Iterate over every file in directory
     regex pattern_regex = regex(this->getRegexFilePattern());
     smatch sm;
+    cout << "here" << endl;
     for (const auto& entry : this->iterator_) {
         // Get the current file
         file_path = entry.path().string();
@@ -80,6 +77,7 @@ void FilePatternObject::matchFilesOneDir(){
         throw std::runtime_error("No files matched. Check that the pattern is correct.");
     }
     */
+   cout << "end" << endl;
 }
 
 void FilePatternObject::matchFilesMultDir(){
@@ -109,14 +107,15 @@ void FilePatternObject::matchFilesMultDir(){
 }
 
 void FilePatternObject::matchFiles() {
-    std::cout << "1" << std::endl;
+    cout << "before" << endl;
     filePatternToRegex(); // Get regex of filepattern
-    std::cout << "2" << std::endl;
+    cout << "after " << endl;
     if(this->recursive_){
-        std::cout << "3" << std::endl;
+        cout << "recursive" << endl;
+
        this->matchFilesMultDir();
     } else {
-        std::cout << "4" << std::endl;
+        cout << "not recursive" << endl;
         this->matchFilesOneDir();
     }
 }

@@ -11,15 +11,13 @@ FilePattern::FilePattern(const std::string& path, const std::string& filePattern
     pi.suppress_warnings = suppressWarnings;
     */
 
-    std::cout << "here" << std::endl;
     FilePatternFactory fpf = FilePatternFactory();
-    std::cout << "here1" << std::endl;
+
     this->fp_ = std::unique_ptr<PatternObject>(fpf.getObject(path, filePattern, block_size, recursive, suppressWarnings));
-    std::cout << "here2" << std::endl;
 }
 
 std::vector<Tuple> FilePattern::getMatching(const std::vector<std::tuple<std::string, std::vector<Types>>>& variables) {
-    return this->getMatching(variables);
+    return this->fp_->getMatching(variables);
     /*
     if (this->fp_->group_.size() == 0) {
         return this->fp_->getMatching(variables);
@@ -35,7 +33,7 @@ void FilePattern::setGroup(std::string& groups){
     this->fp_->group_ = group_vec;
 }
 
-void FilePattern::setGroup(std::vector<std::string>& groups) {
+void FilePattern::setGroup(const std::vector<std::string>& groups) {
     this->fp_->group_ = groups;
 }
 
@@ -54,6 +52,41 @@ std::string FilePattern::outputName(std::vector<Tuple>& vec) {
 std::vector<std::string> FilePattern::getVariables() {
     return this->fp_->getVariables();
 }
+
+void FilePattern::next() {
+    this->fp_->next();
+}
+
+void FilePattern::nextGroup() {
+    this->fp_->nextGroup();
+}
+
+int FilePattern::currentBlockLength() {
+    return this->fp_->currentBlockLength();
+}
+
+/*
+int FilePattern::getFiles() {
+    if(fp_->external) {
+
+        if(fp_->group_.size() != 0 || (fp_->group_.size() != 0 && fp_->group_[0] != "")) {
+            this->nextGroup();
+            return fp_->current_group_;
+        } else {
+            this->next(); 
+            return fp_->current_block_;
+        }
+
+    } else {
+
+        if(fp_->group_.size() != 0 || (fp_->group_.size() != 0 && fp_->group_[0] != "")){
+            return fp_->valid_grouped_files_;
+        } 
+        else{ 
+            return fp_->valid_files_;
+        }
+}
+*/
 
 void FilePattern::getNewNaming(std::string& pattern, bool suppressWarnings) {
     this->fp_->getNewNaming(pattern, suppressWarnings);

@@ -2,6 +2,10 @@
 
 using namespace std;
 
+void InternalPattern::next() {}
+
+void InternalPattern::nextGroup() {}
+
 void InternalPattern::groupByHelper(const vector<string>& groups){
 
     std::vector<std::pair<std::vector<std::pair<std::string, Types>> , std::vector<Tuple>>> temp;
@@ -329,6 +333,8 @@ vector<Tuple> InternalPattern::getSlice(vector<Types>& key){
     return empty;
 
 }
+
+int InternalPattern::currentBlockLength() {}
 
 
 

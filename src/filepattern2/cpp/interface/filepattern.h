@@ -24,12 +24,16 @@ typedef std::vector<std::tuple<Map, std::vector<std::string>>> FileVector;
 
 class FilePattern {
 
-    std::unique_ptr<PatternObject> fp_;
-
     public:
+    
+        std::unique_ptr<PatternObject> fp_;
 
         FilePattern(const std::string& path, const std::string& filePattern="", const std::string& block_size="", bool recursive=false, bool suppressWarnings=false);
 
+        ~FilePattern() {
+            std::cout << "in destructor" << std::endl;
+            this->fp_.reset();
+        }
         //std::vector<Tuple> getMatching(std::map<std::string, std::variant<int, std::string>> variable_value_map);
 
         std::vector<Tuple> getMatching(const std::vector<std::tuple<std::string, std::vector<Types>>>& variables);
@@ -44,7 +48,13 @@ class FilePattern {
 
         void setGroup(std::string& groups);
 
-        void setGroup(std::vector<std::string>& groups);
+        void setGroup(const std::vector<std::string>& groups);
+
+        void next();
+
+        void nextGroup();
+
+        int currentBlockLength();
        
         void getNewNaming(std::string& pattern, bool suppressWarnings);
 
@@ -215,7 +225,7 @@ class FilePatternFactory {
                     
                     return new StringPattern(path, file_pattern); // need to add builder to FPOjbect
                 }
-                std::cout << "before pattern object" << std::endl;
+
                 return new FilePatternObject(path, file_pattern); // need to add builder to FPOjbect
             }
     

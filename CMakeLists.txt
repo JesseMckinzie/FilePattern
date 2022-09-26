@@ -1,7 +1,8 @@
 cmake_minimum_required(VERSION 3.2)
 
 if(APPLE)
-  set(CMAKE_CXX_COMPILER "/usr/local/bin/g++-8")
+  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -stdlib=libc++ -lc++abi")
+#  set(CMAKE_CXX_COMPILER "/usr/local/bin/g++-8")
 endif()
 
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
