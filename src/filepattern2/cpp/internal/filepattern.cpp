@@ -62,7 +62,7 @@ void FilePatternObject::matchFilesOneDir(){
     // Iterate over every file in directory
     regex pattern_regex = regex(this->getRegexFilePattern());
     smatch sm;
-    cout << "here" << endl;
+
     for (const auto& entry : this->iterator_) {
         // Get the current file
         file_path = entry.path().string();
@@ -77,7 +77,7 @@ void FilePatternObject::matchFilesOneDir(){
         throw std::runtime_error("No files matched. Check that the pattern is correct.");
     }
     */
-   cout << "end" << endl;
+
 }
 
 void FilePatternObject::matchFilesMultDir(){
@@ -107,12 +107,11 @@ void FilePatternObject::matchFilesMultDir(){
 }
 
 void FilePatternObject::matchFiles() {
-    cout << "before" << endl;
+
     filePatternToRegex(); // Get regex of filepattern
-    cout << "after " << endl;
+
     if(this->recursive_){
         cout << "recursive" << endl;
-
        this->matchFilesMultDir();
     } else {
         cout << "not recursive" << endl;

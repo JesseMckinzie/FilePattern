@@ -10,6 +10,7 @@ stream_(FilesystemStream(path, recursive, block_size)){
     this->tmp_directories_.push_back(this->valid_files_path_);
     this->infile_.open(this->valid_files_path_); // open temp file for the valid files
     this->group_stream_.open(this->stream_.getValidFilesPath());
+    matching_init_ = false;
 }
 
 ExternalPattern::~ExternalPattern() {
@@ -119,7 +120,11 @@ void ExternalPattern::getMatchingInit(const vector<tuple<string, vector<Types>>>
 
 vector<Tuple> ExternalPattern::getMatching(const vector<tuple<string, vector<Types>>>& variables){
 
-    if (!matching_init_) this->getMatchingInit(variables);
+    if (!matching_init_) {
+        this->getMatchingInit(variables);
+        vector<Tuple> vec;
+        return vec;
+    }
 
     return this->getMatchingBlock();
 }
@@ -364,7 +369,7 @@ std::vector<Tuple> ExternalPattern::getValidFilesBlock(){
 
 }
 
-void ExternalPattern::groupBy(const vector<string>& group_by) {
+void ExternalPattern::groupBy(vector<string>& group_by) {
     this->setGroup(group_by);
     // sort valid files externally 
     string path = this->stream_.getValidFilesPath();
@@ -417,7 +422,12 @@ string ExternalPattern::outputName(vector<Tuple>& vec){
 
 }
 
+string ExternalPattern::inferPattern(vector<string>& vec, string& variables){
+    return inferPatternInternal(vec, variables);
+}
+
 string ExternalPattern::inferPattern(const string& path, string& variables, const string& block_size){
+    std::cout << "external pattern" << std::endl;
     FilesystemStream stream = FilesystemStream(path, true, block_size, true); // create a stream from directory 
 
     vector<string> vec = stream.getBlock();

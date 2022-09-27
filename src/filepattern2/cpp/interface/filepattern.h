@@ -31,7 +31,6 @@ class FilePattern {
         FilePattern(const std::string& path, const std::string& filePattern="", const std::string& block_size="", bool recursive=false, bool suppressWarnings=false);
 
         ~FilePattern() {
-            std::cout << "in destructor" << std::endl;
             this->fp_.reset();
         }
         //std::vector<Tuple> getMatching(std::map<std::string, std::variant<int, std::string>> variable_value_map);
@@ -46,6 +45,8 @@ class FilePattern {
        
         std::vector<std::string> getVariables();
 
+        void groupBy(std::vector<std::string>& groups);
+
         void setGroup(std::string& groups);
 
         void setGroup(const std::vector<std::string>& groups);
@@ -58,8 +59,19 @@ class FilePattern {
        
         void getNewNaming(std::string& pattern, bool suppressWarnings);
 
-        std::string swSearch(std::string& pattern, std::string& filename, const std::string& variables);
+        std::vector<Tuple> getSlice(std::vector<Types>& key);
 
+        //std::string swSearch(std::string& pattern, std::string& filename, const std::string& variables);
+
+        static std::string inferPattern(const std::string& path, std::string& variables, const std::string& block_size="");
+
+        static std::string inferPattern(std::vector<std::string>& vec, std::string& variables);
+
+        std::vector<Tuple> getMatchingBlock();
+
+        Tuple getItem(int key);
+
+        std::vector<Tuple> getItemList(std::vector<int>& key);
         /*
         struct Iterator {
             typedef std::pair<std::vector<std::pair<std::string, Types>> , std::vector<Tuple>> TupleVector;
@@ -220,13 +232,13 @@ class FilePatternFactory {
                     std::getline(infile, str);
     
                     if(std::regex_match(str, std::regex("file\\: .+?; corr\\: .+?; position\\: .+?; grid\\: .+?;"))) {
-                        return new VectorPattern(path, file_pattern); // need to add builder to FPOjbect
+                        return new VectorPattern(path, file_pattern, suppressWarnings); // need to add builder to FPOjbect
                     }
                     
-                    return new StringPattern(path, file_pattern); // need to add builder to FPOjbect
+                    return new StringPattern(path, file_pattern, suppressWarnings); // need to add builder to FPOjbect
                 }
 
-                return new FilePatternObject(path, file_pattern); // need to add builder to FPOjbect
+                return new FilePatternObject(path, file_pattern, recursive, suppressWarnings); // need to add builder to FPOjbect
             }
     
             if(s::endsWith(path, ".txt")) {
@@ -236,12 +248,12 @@ class FilePatternFactory {
                     std::getline(infile, str);
     
                     if(std::regex_match(str, std::regex("file\\: .+?; corr\\: .+?; position\\: .+?; grid\\: .+?;"))) {
-                    return new ExternalVectorPattern(path, file_pattern, block_size); // need to add builder to FPOjbect
+                    return new ExternalVectorPattern(path, file_pattern, block_size, suppressWarnings); // need to add builder to FPOjbect
                 }
                 
-                return new ExternalStringPattern(path, file_pattern, block_size); // need to add builder to FPOjbect
+                return new ExternalStringPattern(path, file_pattern, block_size, suppressWarnings); // need to add builder to FPOjbect
             }
-    
-            return new ExternalFilePattern(path, file_pattern, block_size); // need to add builder to FPOjbect
+            std::cout << "before object" << std::endl;
+            return new ExternalFilePattern(path, file_pattern, block_size, recursive, suppressWarnings); // need to add builder to FPOjbect
         }
 };

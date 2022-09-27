@@ -162,6 +162,11 @@ void InternalPattern::groupBy(vector<string>& groups) {
     
 }
 
+std::vector<Tuple> InternalPattern::getMatchingBlock() {
+    std::vector<Tuple> vec;
+    return vec;
+}
+
 void InternalPattern::getMatchingLoop(vector<Tuple>& iter, 
                                       const string& variable, 
                                       const vector<Types>& values, 
@@ -213,7 +218,7 @@ string InternalPattern::outputName(vector<Tuple>& vec){
     return this->outputNameHelper(vec);
 }
 
-string InternalPattern::inferPattern(const string& path, string& variables){
+string InternalPattern::inferPattern(const string& path, string& variables, const string& block_size){
     vector<string> vec;
 
     if(s::endsWith(path, ".txt")){
@@ -256,7 +261,7 @@ Tuple InternalPattern::getItem(int key){
     return this->valid_files_[key];
 }
 
-vector<Tuple> InternalPattern::getItemList(vector<int> key){
+vector<Tuple> InternalPattern::getItemList(vector<int>& key){
 
     vector<Tuple> vec;
 

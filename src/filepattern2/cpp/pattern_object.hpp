@@ -24,7 +24,11 @@ class PatternObject {
         //std::vector<std::pair<std::pair<std::string, Types>, std::vector<Tuple>>> currentGroup; //Store current block of grouped files
         std::vector<std::pair<std::vector<std::pair<std::string, Types>> , std::vector<Tuple>>> current_group_;
 
+        virtual ~PatternObject() {}
+
         virtual std::vector<Tuple> getMatching(const std::vector<std::tuple<std::string, std::vector<Types>>>& variables) = 0;
+
+        virtual void groupBy(std::vector<std::string>& groups) = 0;
 
         virtual std::map<std::string, std::map<Types, int>> getOccurrences(const std::vector<std::tuple<std::string, std::vector<Types>>>& mapping) = 0;
 
@@ -44,7 +48,19 @@ class PatternObject {
 
         virtual void setGroup(const std::vector<std::string>& groups) = 0;
 
-        virtual std::string swSearch(std::string& pattern, std::string& filename, const std::string& variables) = 0;
+        virtual std::vector<Tuple> getSlice(std::vector<Types>& key) = 0;
+
+        //virtual std::string swSearch(std::string& pattern, std::string& filename, const std::string& variables) = 0;
+
+        virtual std::string inferPattern(const std::string& path, std::string& variables, const std::string& block_size) = 0;
+
+        virtual std::string inferPattern(std::vector<std::string>& vec, std::string& variables) = 0;
+
+        virtual std::vector<Tuple> getMatchingBlock() = 0;
+
+        virtual Tuple getItem(int key) = 0;
+
+        virtual std::vector<Tuple> getItemList(std::vector<int>& key) = 0;
 
 };
 

@@ -231,7 +231,7 @@ class TestFilePattern():
                 assert old_result_slice[i][0]["r"] == result_slice[i][0]["r"]
                 assert old_result_slice[i][0]["c"] == result_slice[i][0]["c"]
                 assert str(os.path.basename(old_result_slice[i][0]['file'])) == os.path.basename(result_slice[i][1][0])
-            
+    
 class TestStringPattern():
 
     root_directory = os.path.dirname(os.path.realpath(__file__))
@@ -1199,4 +1199,4 @@ class TestExternalVectorPattern():
                 for key in result[i][0]:
                     assert int(old_result[i][0][key]) == result[i][0][key]
                 assert str(os.path.basename(old_result[i][0]['file'])) == os.path.basename(result[i][1][0])
-                
+   

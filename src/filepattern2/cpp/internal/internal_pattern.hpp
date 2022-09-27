@@ -76,7 +76,7 @@ class InternalPattern : public Pattern {
 
         Tuple getItem(int key);
 
-        std::vector<Tuple> getItemList(std::vector<int> key);
+        std::vector<Tuple> getItemList(std::vector<int>& key);
 
         std::vector<Tuple> getSlice(std::vector<Types>& key);
         
@@ -87,7 +87,7 @@ class InternalPattern : public Pattern {
          * @param variables Name of variables to use. Optional
          * @return std::string Guess of the pattern
          */
-        std::string inferPattern(const std::string& path, std::string& variables);
+        std::string inferPattern(const std::string& path, std::string& variables, const std::string& block_size);
         
         /**
          * @brief Returns the guess of a pattern given vector of filenames.
@@ -99,5 +99,7 @@ class InternalPattern : public Pattern {
         std::string inferPattern(std::vector<std::string>& vec, std::string& variables);
 
         int currentBlockLength();
+
+        std::vector<Tuple> getMatchingBlock();
 
 };

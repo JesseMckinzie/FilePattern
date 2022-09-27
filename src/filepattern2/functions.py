@@ -25,9 +25,9 @@ def infer_pattern(
         raise ValueError("Pass in only a path or list of files, not both.")
     
     if files == []:
-        return backend.FilePattern.inferPattern(path, variables, block_size)
+        return backend.FilePattern.inferPattern(str(path), str(variables), str(block_size))
     else:
-        return backend.FilePattern.inferPattern(files, variables, block_size)
+        return backend.FilePattern.inferPattern(files, variables)
 
     """
     if path.endswith(".txt"):

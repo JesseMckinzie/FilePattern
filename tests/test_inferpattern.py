@@ -5,7 +5,7 @@ import filepattern2 as fp
 json_path = Path(__file__).parent.parent.joinpath("plugin.json")
 with open(Path(__file__).with_name('test_infer_pattern_data.json'),'r') as fr:        
     data = json.load(fr)
-    
+
 class TestInference():
     """Verify VERSION is correct """
             
@@ -60,13 +60,13 @@ class TestExternalInference():
         pattern = fp.infer_pattern(path=self.path, block_size='1 MB')
         
         assert pattern == 'img_r00{r:d}_c00{t:d}_{c:c+}.tif'
-        
+
     def test_sp_single_block(self):
         path = 'tests/test_data/sp_data.txt'
         pattern = fp.infer_pattern(path=path, block_size='1 GB')
         
         assert pattern == 'img_r00{r:d}_c00{t:d}_{c:c+}.tif'
-        
+
     def test_sp_multi_block(self):
         path = 'tests/test_data/sp_data.txt'
         pattern = fp.infer_pattern(path=path, block_size='900 B')
@@ -84,4 +84,3 @@ class TestExternalInference():
         pattern = fp.infer_pattern(path=path, block_size='1 KB')
         
         assert pattern == 'x{r:dd}_y{t:dd}_wx{c:d}_wy{z:d}_c1.ome.tif'
-        

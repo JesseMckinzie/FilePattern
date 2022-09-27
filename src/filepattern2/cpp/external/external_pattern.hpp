@@ -110,9 +110,9 @@ class ExternalPattern : public Pattern {
         std::ifstream infile_; // Input stream used throughout methods
         FilesystemStream stream_; // I/O stream from temporary file
 
-        std::vector<Tuple> current_block_; // Store current block of files
+        //std::vector<Tuple> current_block_; // Store current block of files
         //std::vector<std::pair<std::pair<std::string, Types>, std::vector<Tuple>>> currentGroup; //Store current block of grouped files
-        std::vector<std::pair<std::vector<std::pair<std::string, Types>> , std::vector<Tuple>>> current_group_;
+        //std::vector<std::pair<std::vector<std::pair<std::string, Types>> , std::vector<Tuple>>> current_group_;
 
         /**
          * @brief Construct a new External Pattern object
@@ -123,6 +123,7 @@ class ExternalPattern : public Pattern {
          */
         ExternalPattern(const std::string& path, const std::string& block_size, bool recursive);
 
+        ExternalPattern(){}
         ~ExternalPattern();
 
         /**
@@ -189,7 +190,7 @@ class ExternalPattern : public Pattern {
          * 
          * @param group_by A variable that is contained in the pattern.
          */
-        void groupBy(const std::vector<std::string>& group_by);
+        void groupBy(std::vector<std::string>& group_by);
 
         /**
          * @brief 
@@ -208,6 +209,8 @@ class ExternalPattern : public Pattern {
          * @return std::string A guess of the pattern
          */
         std::string inferPattern(const std::string& path, std::string& variables, const std::string& block_size);
+
+        std::string inferPattern(std::vector<std::string>& vec, std::string& variables);
 
         /**
          * @brief Returns the length of the current group of files

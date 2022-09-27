@@ -1,8 +1,11 @@
 import filepattern2 as fp
 path = "/Users/jessemckinzie/Desktop/data/int"
-pat = fp.FilePattern(path, 'p{p:d}_y{y:d}_r{r:d}_c{c:d}.ome.tif')
 
-for file in pat():
-    print(file)
+pattern = fp.infer_pattern(path=path, variables='', block_size='50 GB')
 
-print("After Loop")
+
+#pat = fp.FilePattern(path, 'p{p:d}_y{y:d}_r{r:d}_c{c:d}.ome.tif', '50 GB')
+
+#for file in pat():
+#    print(file)
+    

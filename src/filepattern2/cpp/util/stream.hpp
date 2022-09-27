@@ -65,5 +65,5 @@ class Stream {
         bool is_infer;
 
         Stream(const std::string&, const bool is_infer=false);
-
+        Stream(){}
 };

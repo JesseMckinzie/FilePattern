@@ -37,6 +37,8 @@ class FilesystemStream {
          * @param block_size Maximum size of memory the stream will consume at a time
          */
         FilesystemStream(const std::string& path, bool recursive=false, const std::string& block_size="50 MB", const bool is_infer=false);
+        
+        FilesystemStream(){}
 
         ~FilesystemStream();
 

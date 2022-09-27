@@ -31,31 +31,41 @@ PYBIND11_MODULE(backend, m){
         .def("outputName", &FilePattern::outputName)
         .def("getVariables", &FilePattern::getVariables)
         .def("getNewNaming", &FilePattern::getNewNaming)
+        .def("groupBy", &FilePattern::groupBy)
+        .def("currentBlockLength", &FilePattern::currentBlockLength)
+        .def("getSlice", &FilePattern::getSlice)
+        .def("getMatchingBlock", &FilePattern::getMatchingBlock)
+        .def("getItem", &FilePattern::getItem)
+        .def("getItemList", &FilePattern::getItemList)
         //.def("setGroup", &FilePattern::setGroup)
         .def("setGroup", py::overload_cast<const std::vector<std::string>&>(&FilePattern::setGroup))
         .def("setGroupStr",   py::overload_cast<std::string&>(&FilePattern::setGroup))
-        .def("swSearch", &FilePattern::swSearch)
+        .def_static("inferPattern", py::overload_cast<const std::string&, std::string&, const std::string&>(&FilePattern::inferPattern))
+        .def_static("inferPattern", py::overload_cast<std::vector<std::string>&, std::string&>(&FilePattern::inferPattern))
         .def("__iter__", [](FilePattern &v){
-            std::cout << "in iterator" << std::endl;
+
             if(v.fp_->external) {
-                std::cout << "external" << std::endl;
-                if(v.fp_->group_.size() != 0 || (v.fp_->group_.size() != 0 && v.fp_->group_[0] != "")) {
-                    v.nextGroup();
-                    return py::make_iterator(v.fp_->current_group_.begin(), v.fp_->current_group_.end());
-                } else {
+
+                if(v.fp_->group_.size() == 0 || (v.fp_->group_.size() != 0 && v.fp_->group_[0] == "")) {
+                    
                     v.next(); 
                     return py::make_iterator(v.fp_->current_block_.begin(), v.fp_->current_block_.end());
+
+                } else {
+
+                    v.nextGroup();
+                    return py::make_iterator(v.fp_->current_group_.begin(), v.fp_->current_group_.end());
                 }
 
             } else {
-                std::cout << "internal" << std::endl;
+
                 if(v.fp_->group_.size() == 0 || (v.fp_->group_.size() != 0 && v.fp_->group_[0] == "")){
-                    std::cout << "grouped" << std::endl;
+
                     return py::make_iterator(v.fp_->valid_files_.begin(), v.fp_->valid_files_.end());
                     //return py::make_iterator(v.fp_->valid_grouped_files_.begin(), v.fp_->valid_grouped_files_.end());
                 } 
                 else{ 
-                    std::cout << "before iterator" << std::endl;
+                    
                     return py::make_iterator(v.fp_->valid_grouped_files_.begin(), v.fp_->valid_grouped_files_.end());
                 }
             }
