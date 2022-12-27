@@ -45,7 +45,7 @@ class FilePattern {
        
         std::vector<std::string> getVariables();
 
-        void groupBy(std::vector<std::string>& groups);
+        std::vector<std::pair<std::vector<std::pair<std::string, Types>> , std::vector<Tuple>>> groupBy(std::vector<std::string>& groups);
 
         void setGroup(std::string& groups);
 
@@ -72,6 +72,14 @@ class FilePattern {
         Tuple getItem(int key);
 
         std::vector<Tuple> getItemList(std::vector<int>& key);
+
+        std::vector<Tuple>::iterator begin() {
+            return  fp_->valid_files_.begin();
+        }
+        
+        std::vector<Tuple>::iterator end() {
+            return  fp_->valid_files_.end();
+        }
         /*
         struct Iterator {
             typedef std::pair<std::vector<std::pair<std::string, Types>> , std::vector<Tuple>> TupleVector;
@@ -253,7 +261,7 @@ class FilePatternFactory {
                 
                 return new ExternalStringPattern(path, file_pattern, block_size, suppressWarnings); // need to add builder to FPOjbect
             }
-            std::cout << "before object" << std::endl;
+
             return new ExternalFilePattern(path, file_pattern, block_size, recursive, suppressWarnings); // need to add builder to FPOjbect
         }
 };
