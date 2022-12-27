@@ -34,7 +34,9 @@ class TestFilePattern():
                 old_result.append(file)
             for file in files():
                 result.append(file)
-
+                
+            pprint.pprint(result)
+            
             assert len(old_result) == len(result)
             
             for i in range(len(old_result)):
@@ -110,6 +112,8 @@ class TestFilePattern():
 
             assert len(old_result) == len(result)
 
+            pprint.pprint(result)
+            assert 0 == 1
             for i in range(len(old_result)):
                 for j in range(len(old_result[i])):
                     assert old_result[i][j]["r"] == result[i][1][j][0]["r"] 
@@ -1199,4 +1203,5 @@ class TestExternalVectorPattern():
                 for key in result[i][0]:
                     assert int(old_result[i][0][key]) == result[i][0][key]
                 assert str(os.path.basename(old_result[i][0]['file'])) == os.path.basename(result[i][1][0])
+   
    
