@@ -16,7 +16,7 @@
 #include "external/external_stringpattern.hpp"
 #include "external/external_vectorpattern.hpp"
 */
-
+ 
 namespace py = pybind11;
 
 //PYBIND11_MAKE_OPAQUE(std::vector<std::vector<Tuple>>);

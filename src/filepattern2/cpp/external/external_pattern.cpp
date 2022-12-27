@@ -427,7 +427,7 @@ string ExternalPattern::inferPattern(vector<string>& vec, string& variables){
 }
 
 string ExternalPattern::inferPattern(const string& path, string& variables, const string& block_size){
-    std::cout << "external pattern" << std::endl;
+
     FilesystemStream stream = FilesystemStream(path, true, block_size, true); // create a stream from directory 
 
     vector<string> vec = stream.getBlock();

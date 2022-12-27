@@ -111,10 +111,8 @@ void FilePatternObject::matchFiles() {
     filePatternToRegex(); // Get regex of filepattern
 
     if(this->recursive_){
-        cout << "recursive" << endl;
        this->matchFilesMultDir();
     } else {
-        cout << "not recursive" << endl;
         this->matchFilesOneDir();
     }
 }

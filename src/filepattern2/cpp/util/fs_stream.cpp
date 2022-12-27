@@ -300,7 +300,7 @@ string FilesystemStream::getBlockSizeStr(){
 
 Tuple FilesystemStream::getFileByIndex(int i) {
     int file_index = (this->map_size_ + 1)*i + 1;
-    cout << "file: " << file_index << endl;
+    //cout << "file: " << file_index << endl;
     ifstream in = ifstream(this->valid_files_);
 
     string str;

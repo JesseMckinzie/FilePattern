@@ -23,8 +23,9 @@ FilePattern::FilePattern(const std::string& path, const std::string& filePattern
 
 }
 
-void FilePattern::groupBy(std::vector<std::string>& groups) {
+std::vector<std::pair<std::vector<std::pair<std::string, Types>> , std::vector<Tuple>>> FilePattern::groupBy(std::vector<std::string>& groups) {
     this->fp_->groupBy(groups);
+    return this->fp_->valid_grouped_files_;
 }
 
 std::vector<Tuple> FilePattern::getMatching(const std::vector<std::tuple<std::string, std::vector<Types>>>& variables) {
