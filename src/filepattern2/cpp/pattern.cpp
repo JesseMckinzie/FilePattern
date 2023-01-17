@@ -51,7 +51,6 @@ void Pattern::filePatternToRegex(){
     this->regex_file_pattern_ = get<0>(vars);
     this->variables_ = get<1>(vars);
     this->named_groups_ = get<2>(vars);
-
 }
 
 tuple<string, vector<string>, vector<string>> Pattern::getRegex(string& pattern, bool suppressWarning){
@@ -59,21 +58,24 @@ tuple<string, vector<string>, vector<string>> Pattern::getRegex(string& pattern,
     getNewNaming(pattern, suppressWarning);
 
     // regex to match variables
-    std::string e_str = "(\\{(\\w+):([dc+]+)\\})|(\\(P\\?<(\\w+)>(.+)\\))";
+    std::string e_str = "(\\{(\\w+):([0\\.dcf+]+)\\})|(\\(P\\?<(\\w+)>(.+)\\))";
     std::regex e(e_str, regex_constants::ECMAScript); // check for bracket expressions or named groups
 
     std::string group_str = "\\?<(\\w+)>(.+)";
 
     std::regex group(group_str, regex_constants::ECMAScript); // check for regex named groups
 
-    std::string var_str = "\\{(\\w+):([dc+]+)\\}";
+    std::string var_str = "\\{(\\w+):([0\\.dcf+]+)\\}";
     std::regex var(var_str, regex_constants::ECMAScript); // pattern style of groups (e.g {r:ddd})
 
 
-    map<char, string> patternMap; // map of variable types to regex equivalent 
-    patternMap['d'] = "[0-9]"; 
-    patternMap['c'] = "[a-zA-Z]";
-    patternMap['+'] = "+";
+    map<wchar_t, string> patternMap; // map of variable types to regex equivalent 
+    patternMap['d'] = "[0-9]"; // integer matchingß
+    patternMap['c'] = "[a-zA-Z]"; // character matching
+    patternMap['f'] = "[0-9\\.]"; // match any floating point
+    patternMap['.'] = "\\."; // decimal for floating point patterns
+    patternMap['0'] = "0"; // 0 for decimal patterns
+    patternMap['+'] = "+"; // arbitrary length matching
     
     string str, rgx; // temp string and regex
     vector<pair<string,string>> matches; // map between bracket expression and regex
@@ -82,7 +84,7 @@ tuple<string, vector<string>, vector<string>> Pattern::getRegex(string& pattern,
     std::smatch sm, m; // regex matches
 
     string temp;
-
+    wchar_t last;
     // extract bracket expressions from pattern and store regex
     while (regex_search(patternCopy, m, e)){
         temp = m[0];
@@ -103,6 +105,7 @@ tuple<string, vector<string>, vector<string>> Pattern::getRegex(string& pattern,
             while (regex_search(temp, sm, var)){
                 str = sm[2]; // store variable values (e.g. ddd)
                 rgx = ""; // construct regex
+                //last = '';
                 for(const auto c: str){
                     rgx += patternMap[c];
                 }
@@ -159,16 +162,27 @@ Tuple Pattern::getVariableMapMultDir(const string& filePath, const smatch& sm){
 Tuple Pattern::getVariableMap(const string& filePath, const smatch& sm){
     Tuple tup;
     // filename matches the pattern
-    std::get<1>(tup).push_back(filePath);
+
+    std::get<1>(tup).push_back(std::filesystem::path(filePath));
 
     
     string str;
     // Extract capture groups from filename and store in mapping
     for(int i = 1; i < sm.size(); ++i){
+
         str = sm[i];
+
         // conserve variable type
-        s::is_number(str) ? get<0>(tup)[variables_[i-1]] = stoi(str) : 
-                            get<0>(tup)[variables_[i-1]] = str;
+        if (s::is_number(str)) {
+            if (s::is_integer(str)) {
+                get<0>(tup)[variables_[i-1]] = std::stoi(str);
+            } else {
+                get<0>(tup)[variables_[i-1]] = std::stod(str);
+            }
+        } else {
+            get<0>(tup)[variables_[i-1]] = str;
+        }
+
         this->variable_occurrences_[this->variables_[i-1]][get<0>(tup)[this->variables_[i-1]]] += 1; // update count of the variable occurence
         this->unique_values_[this->variables_[i-1]].insert(get<0>(tup)[this->variables_[i-1]]); // update the unique values for the variable
     }

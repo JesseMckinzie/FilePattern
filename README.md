@@ -191,10 +191,16 @@ for file in files():
 
 The result is:
 ```
+({'c': 1.15, 'r': 0.05},
+ ['path/to/directory/img_r0.05_c1.15.tif'])
+({'c': 2.25, 'r': 1.05},
+ ['path/to/directory/img_r1.05_c2.25.tif'])
+({'c': 3.35, 'r': 2.05},
+ ['path/to/directory/img_r2.05_c3.35.tif'])
 ```
 
-To capture floating point numbers with an arbitrary number of digits, we can use `f+`. This method opperates in the same way as using `d+` or `c+`, where all digits (and the decimal point) will be
-captured. The code for this method is
+To capture floating point numbers with an arbitrary number of digits, we can use `f+`. This method operates in the same way as using `d+` or `c+`, where all digits (and the decimal point) will be
+captured for a floating point of any length. The code for this method is
 
 ```python
 filepath = "path/to/directory"
@@ -223,6 +229,8 @@ for file in files():
 ```
 
 Once again, the results are the same as the first example.
+
+Note that `d` can be used to specify even more specific floating points. For example, if we want to capturing all floating points with one digit in the whole part and an arbitrary number of digits in the decimal, we can add `d.d+` for the pattern. Similarly, this could be used in a reverse manner to capture an arbitrary number of digits in the whole part using `d+.ddd`.
 
 <h3 id="get-matching"> Get Matching </h3>
 

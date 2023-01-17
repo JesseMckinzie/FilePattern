@@ -31,7 +31,7 @@
 #include <iostream>
 #include <regex>
 
-typedef std::variant<int, std::string> Types;
+typedef std::variant<int, std::string, double> Types;
 typedef std::map<std::string, Types> Map;
 typedef std::tuple<Map, std::vector<std::string>> Tuple;
 
@@ -95,13 +95,19 @@ namespace s {
      * @brief Check if a string is a digit.
      *
      * @param s String to be checked
-     * @return true String is a number
+     * @return true String is a numbers
      * @return false String is not a number
      */
     inline bool is_number(const std::string& s) {
-        if(s[0] == '-') return std::regex_match(s, std::regex("^-?[0-9]\\d*(\\.\\d+)?$"));
-        return !s.empty() && std::all_of(s.begin(), s.end(), ::isdigit);
-        
+        return std::regex_match(s, std::regex("^(-?)(0|([1-9][0-9]*))(\\.[0-9]+)?$"));
+    }
+
+    inline bool is_integer(const std::string& s) {
+        return std::regex_match(s, std::regex("^(-?)(^0$|^[1-9][0-9]*$)?$"));
+    }
+
+    inline bool is_double(const std::string& s) {
+        return std::regex_match(s, std::regex("^(-?)(0|([1-9][0-9]*))(\\.[0-9]+)?$"));
     }
 
     /**
@@ -384,7 +390,13 @@ namespace m {
         Types value;
         for (auto& p : std::get<0>(mapping)) {
             value = p.second;
-            if (s::is_number(s::to_string(p.second))) value = std::stoi(s::to_string(p.second));
+            if (s::is_number(s::to_string(p.second))) {
+                if (s::is_integer(s::to_string(p.second))) {
+                    value = std::stoi(s::to_string(p.second));
+                } else {
+                    value = std::stod(s::to_string(p.second));
+                }
+            }
             p.second = value;
         }
     }
