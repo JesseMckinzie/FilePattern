@@ -165,6 +165,65 @@ The output is:
 ```
 Note that the return of each call is a tuple where the first member is the ``group_by`` variable mapped to the current value and the second member is a list of files where the ``group_by`` variable matches the current value.
 
+<h3 id="floating-point"> Floating Point Support </h3>
+`filepattern` has the ability to capture floating point values in file patterns. For example, if we have a set of files
+
+```
+img_r0.05_c1.15.tif
+img_r1.05_c2.25.tif
+img_r2.05_c3.35.tif
+```
+
+We can capture the values in a couple of different ways. Similar to capturing digits, the character `f` can be used to capture an element of a floating point number.
+Note that with this method, the demical point in the number must be captured by an `f`. For example, in the file `img_r0.05_c1.15.tif`, the floating point numbers would be capture with `ffff`.
+The code to utilize this method is
+
+```python
+filepath = "path/to/directory"
+
+pattern = "img_r{r:ffff}_c{c:ffff}.tif"
+
+files = fp.FilePattern(filepath, pattern)
+
+for file in files(): 
+    pprint.pprint(file)
+```
+
+The result is:
+```
+```
+
+To capture floating point numbers with an arbitrary number of digits, we can use `f+`. This method opperates in the same way as using `d+` or `c+`, where all digits (and the decimal point) will be
+captured. The code for this method is
+
+```python
+filepath = "path/to/directory"
+
+pattern = "img_r{r:f+}_c{c:f+}.tif"
+
+files = fp.FilePattern(filepath, pattern)
+
+for file in files(): 
+    pprint.pprint(file)
+```
+
+The result of this code is the same as the previous example.
+
+The final method for capturing floating points is to use `d` to capture the digits and to add the decimal point where needed. For example, in the file `img_r0.05_c1.15.tif`, the floating point numbers could be captured using `d.dd`. The code for this method is:
+
+```python
+filepath = "path/to/directory"
+
+pattern = "img_r{r:d.dd}_c{c:d.dd}.tif"
+
+files = fp.FilePattern(filepath, pattern)
+
+for file in files(): 
+    pprint.pprint(file)
+```
+
+Once again, the results are the same as the first example.
+
 <h3 id="get-matching"> Get Matching </h3>
 
 To get files where the variable matches a value, the ``get_matching`` method is used. For example, if only files from the TXREAD channel are needed, ``get_matching(channel=['TXREAD']`` is called. 
