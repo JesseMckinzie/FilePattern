@@ -119,52 +119,6 @@ The output of this case is:
   'path/to/root/direcotry/TXREAD/img_r001_c001.tif'])
 ```
 
-<h3 id="group-by"> Group By </h3>
-
-If images need to be processed in a specific order, for example by the row number, the ``group_by`` function is used. With the directory 
-
-```
-img_r001_c001_DAPI.tif
-img_r002_c001_DAPI.tif
-img_r001_c001_TXREAD.tif
-img_r002_c001_TXREAD.tif
-img_r001_c001_GFP.tif
-img_r002_c001_GFP.tif
-```
-
-the images can be returned in groups where ``r`` is held constant by passing the parameter ``group_by='r'`` to the object iterator.
-
-```python
-import filepattern2 as fp
-import pprint
-
-filepath = "path/to/directory"
-
-pattern = "img_r{r:ddd}_c{c:ddd}_{channel:c+}.tif"
-
-files = fp.FilePattern(filepath, pattern)
-
-for file in files(group_by='r'): 
-    pprint.pprint(file)
-```
-
-The output is:
-```
-('r': 1, [({'c': 1, 'channel': 'DAPI', 'file': 0, 'r': 1},
-  ['/home/ec2-user/Dev/FilePattern/data/example/img_r001_c001_DAPI.tif']),
- ({'c': 1, 'channel': 'TXREAD', 'file': 0, 'r': 1},
-  ['/home/ec2-user/Dev/FilePattern/data/example/img_r001_c001_TXREAD.tif']),
- ({'c': 1, 'channel': 'GFP', 'file': 0, 'r': 1},
-  ['/home/ec2-user/Dev/FilePattern/data/example/img_r001_c001_GFP.tif'])])
-('r': 2, [({'c': 1, 'channel': 'DAPI', 'file': 0, 'r': 2},
-  ['/home/ec2-user/Dev/FilePattern/data/example/img_r002_c001_DAPI.tif']),
- ({'c': 1, 'channel': 'GFP', 'file': 0, 'r': 2},
-  ['/home/ec2-user/Dev/FilePattern/data/example/img_r002_c001_GFP.tif']),
- ({'c': 1, 'channel': 'TXREAD', 'file': 0, 'r': 2},
-  ['/home/ec2-user/Dev/FilePattern/data/example/img_r002_c001_TXREAD.tif'])])
-```
-Note that the return of each call is a tuple where the first member is the ``group_by`` variable mapped to the current value and the second member is a list of files where the ``group_by`` variable matches the current value.
-
 <h3 id="floating-point"> Floating Point Support </h3>
 `filepattern` has the ability to capture floating point values in file patterns. For example, if we have a set of files
 
@@ -231,6 +185,52 @@ for file in files():
 Once again, the results are the same as the first example.
 
 Note that `d` can be used to specify even more specific floating points. For example, if we want to capturing all floating points with one digit in the whole part and an arbitrary number of digits in the decimal, we can add `d.d+` for the pattern. Similarly, this could be used in a reverse manner to capture an arbitrary number of digits in the whole part using `d+.ddd`.
+
+<h3 id="group-by"> Group By </h3>
+
+If images need to be processed in a specific order, for example by the row number, the ``group_by`` function is used. With the directory 
+
+```
+img_r001_c001_DAPI.tif
+img_r002_c001_DAPI.tif
+img_r001_c001_TXREAD.tif
+img_r002_c001_TXREAD.tif
+img_r001_c001_GFP.tif
+img_r002_c001_GFP.tif
+```
+
+the images can be returned in groups where ``r`` is held constant by passing the parameter ``group_by='r'`` to the object iterator.
+
+```python
+import filepattern2 as fp
+import pprint
+
+filepath = "path/to/directory"
+
+pattern = "img_r{r:ddd}_c{c:ddd}_{channel:c+}.tif"
+
+files = fp.FilePattern(filepath, pattern)
+
+for file in files(group_by='r'): 
+    pprint.pprint(file)
+```
+
+The output is:
+```
+('r': 1, [({'c': 1, 'channel': 'DAPI', 'file': 0, 'r': 1},
+  ['/home/ec2-user/Dev/FilePattern/data/example/img_r001_c001_DAPI.tif']),
+ ({'c': 1, 'channel': 'TXREAD', 'file': 0, 'r': 1},
+  ['/home/ec2-user/Dev/FilePattern/data/example/img_r001_c001_TXREAD.tif']),
+ ({'c': 1, 'channel': 'GFP', 'file': 0, 'r': 1},
+  ['/home/ec2-user/Dev/FilePattern/data/example/img_r001_c001_GFP.tif'])])
+('r': 2, [({'c': 1, 'channel': 'DAPI', 'file': 0, 'r': 2},
+  ['/home/ec2-user/Dev/FilePattern/data/example/img_r002_c001_DAPI.tif']),
+ ({'c': 1, 'channel': 'GFP', 'file': 0, 'r': 2},
+  ['/home/ec2-user/Dev/FilePattern/data/example/img_r002_c001_GFP.tif']),
+ ({'c': 1, 'channel': 'TXREAD', 'file': 0, 'r': 2},
+  ['/home/ec2-user/Dev/FilePattern/data/example/img_r002_c001_TXREAD.tif'])])
+```
+Note that the return of each call is a tuple where the first member is the ``group_by`` variable mapped to the current value and the second member is a list of files where the ``group_by`` variable matches the current value.
 
 <h3 id="get-matching"> Get Matching </h3>
 
