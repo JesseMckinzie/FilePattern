@@ -35,6 +35,8 @@ class FilePattern {
         }
         //std::vector<Tuple> getMatching(std::map<std::string, std::variant<int, std::string>> variable_value_map);
 
+        std::vector<Tuple> getMatchingMap (Map& variables);
+
         std::vector<Tuple> getMatching(const std::vector<std::tuple<std::string, std::vector<Types>>>& variables);
 
         std::map<std::string, std::map<Types, int>> getOccurrences(const std::vector<std::tuple<std::string, std::vector<Types>>>& mapping);

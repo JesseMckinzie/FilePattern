@@ -1,6 +1,7 @@
 package filepattern2.java_bindings;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.ArrayList;
 import java.util.Iterator;
 //import java.util.AbstractMap;
@@ -29,21 +30,25 @@ public class FilePattern implements Iterable {
 
         public FilePatternBuilder filePattern(String filePattern) {
             this.filePattern = filePattern;
+            return this;
         }
 
         public FilePatternBuilder recursive(boolean recursive) {
             this.recursive = recursive;
+            return this;
         }
 
         public FilePatternBuilder suppressWarnings(boolean suppressWarnings) {
             this.suppressWarnings = suppressWarnings;
+            return this;
         }
 
         public FilePatternBuilder blockSize(String blockSize) {
             this.blockSize = blockSize;
+            return this;
         }
 
-        public FilePattern build() {
+        public FilePattern build() throws IOException {
             FilePattern fp = new FilePattern(this);
             return fp;
         }
@@ -53,8 +58,9 @@ public class FilePattern implements Iterable {
     private FilePattern(FilePatternBuilder builder) throws IOException {
 
         this.builder = builder;
-        this.external = !(builder.blockSize.equals(""));
         
+        this.fp = new FilePatternBindings.FilePattern(builder.path, builder.filePattern, builder.blockSize, builder.recursive, builder.suppressWarnings); // need to add builder to FPOjbect
+            
         /*
         FilePatternFactory patternFactory = new FilePatternFactory();
 
@@ -66,13 +72,13 @@ public class FilePattern implements Iterable {
 
         this.checkKeywordArgs(keywordArgs);
 
-        return fp.getMatching(StringVariantMap.cast(keywordArgs));
+        return FilePatternBindings.FilePatternVector.cast(fp.getMatching(FilePatternBindings.StringVariantMap.cast(keywordArgs)));
     } 
  
-    public ArrayList<Pair<HashMap<String, Object>, ArrayList<Path>>> getOccurrences(HashMap<String, Object> keywordArgs) throws IllegalArgumentException {
+    public HashMap<String, HashMap<Object, Integer>> getOccurrences(HashMap<String, Object> keywordArgs) throws IllegalArgumentException {
         this.checkKeywordArgs(keywordArgs);
 
-        return fp.getOccurrences(StringVariantMap.cast(keywordArgs));
+        return FilePatternBindings.StringMapMap.cast(this.fp.getOccurrencesByMap(FilePatternBindings.StringVariantMap.cast(keywordArgs)));
     }
 
     /*
@@ -85,20 +91,20 @@ public class FilePattern implements Iterable {
 
     public String outputName(ArrayList<Pair<HashMap<String, Object>, ArrayList<Path>>> files) {
 
-        return fp.outputName(files);
+        return this.fp.outputName(FilePatternBindings.TupleVector.cast(files));
     }
 
     public String getPath() {
 
-        return fp.getPath();
+        return this.fp.getPath();
     }
 
-    public Iterator iterator() {
+    public Iterator<Pair<HashMap<String, Object>, ArrayList<Path>>> iterator() {
         return new FilePatternIterator(this);
     }
 
     public Pair<HashMap<String, Object>, ArrayList<Path>> getAt(long index) {
-        return self.fp.getSlice(index);
+        return FilePatternBindings.Tuple.cast(this.fp.getSlice(index));
     }
 
     private void checkKeywordArgs(HashMap<String, Object> keywordArgs) throws IllegalArgumentException {
@@ -107,13 +113,16 @@ public class FilePattern implements Iterable {
             Object value = mapElement.getValue();
 
             if(!(value instanceof Integer || value instanceof String)) {
-                throw IllegalArgumentException("Value of keywordArgs must be Integer or String.");
+                throw new IllegalArgumentException("Value of keywordArgs must be Integer or String.");
             }
         }
     }
 
+    public int getSize() {
+        return this.fp.getSize();
+    }
 
-    private class FilePatternIterator implements Iterator {
+    private class FilePatternIterator implements Iterator<Pair<HashMap<String, Object>, ArrayList<Path>>> {
 
         private long current;
         private FilePattern fp;
@@ -132,7 +141,7 @@ public class FilePattern implements Iterable {
         }
 
     }
-
+    /*
     private class FilePatternFactory {
 
         public FilePatternBindings.PatternObject getObject(FilePatternBuilder builder) {
@@ -169,6 +178,7 @@ public class FilePattern implements Iterable {
             return new FilePatternBindings.ExternalFilePatternObject(builder.path, builder.blockSize); // need to add builder to FPOjbect
         }
     }
+    */
 
     /*
     private static class Cast {
@@ -185,22 +195,25 @@ public class FilePattern implements Iterable {
 
     }
     */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         // Pointer objects allocated in Java get deallocated once they become unreachable,
         // but C++ destructors can still be called in a timely fashion with Pointer.deallocate()
-        FilePattern fp = new FilePattern("/home/ec2-user/Dev/Demo/test_data/data", "img_r{r:ddd}_c{c:ddd}_{channel:c+}.tif", false, true);
+        //FilePattern fp = new FilePattern("/home/ec2-user/Dev/Demo/test_data/data", "img_r{r:ddd}_c{c:ddd}_{channel:c+}.tif", false, true);
         //p.init("/home/ec2-user/Dev/Demo/test_data/data", "img_r{r:ddd}_c{c:ddd}_{channel:c+}.tif", false, true);
         //fp.printFiles();
 
-        FilePatternVector files = fp.getFiles();
+        //FilePatternVector files = fp.getFiles();
 
-        ArrayList<Pair<HashMap<String, Object>, ArrayList<Path>>> vec = FilePatternVector.cast(files);
+        //ArrayList<Pair<HashMap<String, Object>, ArrayList<Path>>> vec = FilePatternVector.cast(files);
 
-        System.out.println("--------------");
+        FilePattern fp = new FilePattern.FilePatternBuilder("/home/ec2-user/Dev/Demo/test_data/data").recursive(false)
+                                        .filePattern("img_r{r:ddd}_c{c:ddd}_{channel:c+}.tif")
+                                        .suppressWarnings(false)
+                                        .blockSize("")
+                                        .recursive(false).build();
 
-        //System.out.println(vec);
-        
-        System.out.println("------------");
-        System.out.println(files.get(0).get1().get(0));
+        Iterator<Pair<HashMap<String, Object>, ArrayList<Path>>> iter = fp.iterator();
+
+        System.out.println(iter.next());
     }
 }

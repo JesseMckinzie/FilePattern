@@ -3,6 +3,7 @@
 package filepattern2.java_bindings;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.ArrayList;
 import java.util.Iterator;
 //import java.util.AbstractMap;
@@ -247,6 +248,10 @@ public class FilePatternBindings implements InfoMapper {
         public Variant(Pointer p) { super(p); }
         public Variant()       { allocate();  }
         private native void allocate(); 
+
+        public native Variant put(Integer value);
+        public native Variant put(@StdString String value);
+
     }
 
     @Name("std::map<std::string, std::variant<int, std::string>>") 
@@ -260,7 +265,7 @@ public class FilePatternBindings implements InfoMapper {
         public native long size();
     
         @Index public native @ByRef Variant get(@StdString String i);
-        public native StringStringMap put(@StdString String i, Variant value);
+        public native StringVariantMap put(@StdString String i, Variant value);
 
         public native @ByVal Iterator begin();
         public native @ByVal Iterator end();
@@ -289,7 +294,15 @@ public class FilePatternBindings implements InfoMapper {
         public static StringVariantMap cast(HashMap<String, Object> map) {
             StringVariantMap casted = new StringVariantMap();
             for (Map.Entry<String, Object> entry : map.entrySet()) {
-                casted.put(entry.getKey(), entry.getValue());
+                Variant var = new Variant();
+
+                if (entry.getValue() instanceof Integer) {
+                    casted.put(entry.getKey(), var.put((Integer) entry.getValue()));
+                } else if (entry.getValue() instanceof String) {
+                    casted.put(entry.getKey(), var.put(String.valueOf(entry.getValue())));
+                } else {
+                    throw new IllegalArgumentException("Value must be Integer or String.");
+                }
             }
             return casted;
         }
@@ -309,6 +322,8 @@ public class FilePatternBindings implements InfoMapper {
         public native @ByRef String get(long n);
         public native @ByRef String at(long n);
 
+        public native FileVector put(@Cast("size_t") long i, Path value);
+
         public native long size();
         public native @Cast("bool") boolean empty();
 
@@ -320,12 +335,24 @@ public class FilePatternBindings implements InfoMapper {
             
             return casted;
         }
+
+        public static FileVector cast(ArrayList<Path> input) {
+            FileVector casted = new FileVector();
+
+            for(long i = 0; i < input.size(); ++i) {
+                casted.put(i, input.get((int) i));
+            }
+            
+            return casted;
+        }
     }
     
     @NoOffset
     @Name("std::tuple<std::map<std::string, std::variant<int, std::string>>, std::vector<std::filesystem::path>>")  
     public static class Tuple extends Pointer {
         static { Loader.load(); }
+
+        public Tuple() { super(); }
         public Tuple(Pointer p) { super(p); }
         
         
@@ -339,6 +366,8 @@ public class FilePatternBindings implements InfoMapper {
         @Namespace @Name("std::get<1>")
         public static native @ByRef FileVector get1(@ByRef Tuple container);
 
+        public native void put(StringVariantMap i, FileVector j);
+
         public static Pair<HashMap<String, Object>, ArrayList<Path>> cast(Tuple tuple) {
             
             Pair<HashMap<String, Object>, ArrayList<Path>> casted = new Pair<HashMap<String, Object>, ArrayList<Path>>();
@@ -347,6 +376,30 @@ public class FilePatternBindings implements InfoMapper {
             casted.second = FileVector.cast(tuple.get1());
 
             return casted;
+        }
+
+        public static Tuple cast(Pair<HashMap<String, Object>, ArrayList<Path>> input) {
+            
+            StringVariantMap casted1 = new StringVariantMap();
+            FileVector casted2 = new FileVector();
+
+            /*
+            for (Map.Entry<String, Object> entry : input.first) {
+                casted1.put(entry.getKey(), entry.getValue().entrySet());
+            }
+            */
+
+            casted1 = StringVariantMap.cast(input.first);
+
+            for(long i = 0; i < input.second.size(); ++i) {
+                casted2.put(i, input.second.get((int)i));
+            }
+            
+            Tuple tuple = new Tuple();
+
+            tuple.put(casted1, casted2);
+
+            return tuple;
         }
 
         //public native long size();
@@ -375,6 +428,23 @@ public class FilePatternBindings implements InfoMapper {
         @ValueSetter @Index(function = "at") public native TupleVector put(@Cast("size_t") long i, Tuple value);
 
         public native void resize(@Cast("size_t") long n);
+
+        public static TupleVector cast(ArrayList<Pair<HashMap<String, Object>, ArrayList<Path>>> input) {
+            
+            TupleVector casted = new TupleVector();
+            
+            Pair<HashMap<String, Object>, ArrayList<Path>> pair = new Pair<HashMap<String, Object>, ArrayList<Path>>();
+            Tuple tuple = new Tuple();
+            
+            for(long i = 0; i < input.size(); ++i) {
+                pair = input.get((int) i);
+                tuple.put(StringVariantMap.cast(pair.first), FileVector.cast(pair.second));
+                casted.put(i, tuple);
+
+            }
+
+            return casted;
+        }
 
         /* 
         public TupleVector cast( vec) {
@@ -493,11 +563,10 @@ public class FilePatternBindings implements InfoMapper {
 
         static { Loader.load(); }
 
-        static { Loader.load(); }
-        public FilePattern(String path, String filePattern, boolean recursive, boolean suppress_warnings) { 
-            allocate(path, filePattern, recursive, suppress_warnings); 
+        public FilePattern(String path, String filePattern, String blockSize, boolean recursive, boolean suppress_warnings) { 
+            allocate(path, filePattern, blockSize, recursive, suppress_warnings); 
         }
-        private native void allocate(String path, String filePattern, boolean recursive, boolean suppress_warnings);
+        private native void allocate(String path, String filePattern, String blockSize, boolean recursive, boolean suppress_warnings);
 
         public native @StdString String getPattern();
         public native @StdString String getPath();
@@ -508,7 +577,7 @@ public class FilePatternBindings implements InfoMapper {
 
         public native void setGroup(@ByRef StringVector groups);
 
-        public native @ByVal FilePatternVector getMatching(@ByRef TypesTupleVector variables);
+        public native @ByVal FilePatternVector getMatching(@ByRef StringVariantMap variables);
 
         //public abstract @ByVal FilePatternVector getMatching(@ByRef TypesTupleVector variables);
 
@@ -520,7 +589,7 @@ public class FilePatternBindings implements InfoMapper {
 
         public native @ByVal FilePatternVector getFiles();
 
-        public native @ByVal StringMapMap getOccurrences(@ByRef TypesTupleVector mapping);
+        public native @ByVal StringMapMap getOccurrencesByMap(@ByRef StringVariantMap mapping);
 
         //public abstract @ByVal StringMapMap getUniqueValues(@ByRef StringVector vec);
 
@@ -529,6 +598,10 @@ public class FilePatternBindings implements InfoMapper {
         //public abstract void groupBy(StringVector groups);
 
         public native @ByVal @StdString String outputName(@ByRef TupleVector vec);
+
+        public native @ByVal Integer getSize();
+
+        public native @ByVal Tuple getSlice(long index);
     }
 
     /*

@@ -28,6 +28,15 @@ std::vector<std::pair<std::vector<std::pair<std::string, Types>> , std::vector<T
     return this->fp_->valid_grouped_files_;
 }
 
+std::vector<Tuple> FilePattern::getMatching(Map& variables) {
+    std::vector<std::tuple<std::string, std::vector<Types>>> variables_vector;
+    for(auto const& variable: variables){
+        variable_vector.push_back(make_tuple(variable.first, {variable.second}));
+    }
+
+    return this->fp_->getMatching(variables_vector);
+}
+
 std::vector<Tuple> FilePattern::getMatching(const std::vector<std::tuple<std::string, std::vector<Types>>>& variables) {
     return this->fp_->getMatching(variables);
     /*
@@ -51,6 +60,15 @@ void FilePattern::setGroup(std::string& groups){
 
 void FilePattern::setGroup(const std::vector<std::string>& groups) {
     this->fp_->group_ = groups;
+}
+
+std::map<std::string, std::map<Types, int>> FilePattern::getOccurrencesByMap(Map& mapping) {
+    std::vector<std::tuple<std::string, std::vector<Types>>> variables_vector;
+    for(auto const& variable: variables){
+        variable_vector.push_back(make_tuple(variable.first, {variable.second}));
+    }
+    
+    return this->fp_->getOccurrences(variables_vector);
 }
 
 std::map<std::string, std::map<Types, int>> FilePattern::getOccurrences(const std::vector<std::tuple<std::string, std::vector<Types>>>& mapping) {
