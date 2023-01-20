@@ -16,9 +16,9 @@
 #include "../external/external_vectorpattern.hpp"
 
 
-// typedef std::variant<int, std::string> Types;
-// typedef std::map<std::string, Types> Map;
-// typedef std::tuple<Map, std::vector<std::string>> Tuple;
+typedef std::variant<int, std::string> Types2;
+typedef std::map<std::string, Types> Map2;
+typedef std::tuple<Map, std::vector<std::string>> Tuple2;
 
 typedef std::vector<std::tuple<Map, std::vector<std::string>>> FileVector;
 
@@ -35,11 +35,16 @@ class FilePattern {
         }
         //std::vector<Tuple> getMatching(std::map<std::string, std::variant<int, std::string>> variable_value_map);
 
-        std::vector<Tuple> getMatchingMap (Map& variables);
+        std::vector<Tuple> getMatchingByMap (Map& variables);
+
+        std::vector<Tuple> getFiles();
 
         std::vector<Tuple> getMatching(const std::vector<std::tuple<std::string, std::vector<Types>>>& variables);
 
         std::map<std::string, std::map<Types, int>> getOccurrences(const std::vector<std::tuple<std::string, std::vector<Types>>>& mapping);
+
+        std::map<std::string, std::map<Types, int>> getOccurrencesByMap(Map& mapping);
+
 
         std::map<std::string, std::set<Types>> getUniqueValues(const std::vector<std::string>& mapping);
 
@@ -63,6 +68,8 @@ class FilePattern {
 
         std::vector<Tuple> getSlice(std::vector<Types>& key);
 
+        std::vector<Tuple> getSliceByIdx(int key);
+
         //std::string swSearch(std::string& pattern, std::string& filename, const std::string& variables);
 
         static std::string inferPattern(const std::string& path, std::string& variables, const std::string& block_size="");
@@ -82,6 +89,13 @@ class FilePattern {
         std::vector<Tuple>::iterator end() {
             return  fp_->valid_files_.end();
         }
+
+        int getSize();
+
+        std::string getPattern();
+        void setPattern(std::string& pattern);
+        std::string getPath();
+
         /*
         struct Iterator {
             typedef std::pair<std::vector<std::pair<std::string, Types>> , std::vector<Tuple>> TupleVector;

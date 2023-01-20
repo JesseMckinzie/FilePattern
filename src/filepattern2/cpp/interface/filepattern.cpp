@@ -23,15 +23,22 @@ FilePattern::FilePattern(const std::string& path, const std::string& filePattern
 
 }
 
+std::vector<Tuple> FilePattern::getFiles() {
+    return this->fp_->valid_files_;
+}
+
 std::vector<std::pair<std::vector<std::pair<std::string, Types>> , std::vector<Tuple>>> FilePattern::groupBy(std::vector<std::string>& groups) {
     this->fp_->groupBy(groups);
     return this->fp_->valid_grouped_files_;
 }
 
-std::vector<Tuple> FilePattern::getMatching(Map& variables) {
+std::vector<Tuple> FilePattern::getMatchingByMap(Map& variables) {
     std::vector<std::tuple<std::string, std::vector<Types>>> variables_vector;
+
     for(auto const& variable: variables){
-        variable_vector.push_back(make_tuple(variable.first, {variable.second}));
+        std::vector<Types> vec;
+        vec.push_back(variable.second);
+        variables_vector.push_back(std::make_tuple(variable.first, vec));
     }
 
     return this->fp_->getMatching(variables_vector);
@@ -62,17 +69,20 @@ void FilePattern::setGroup(const std::vector<std::string>& groups) {
     this->fp_->group_ = groups;
 }
 
+std::map<std::string, std::map<Types, int>> FilePattern::getOccurrences(const std::vector<std::tuple<std::string, std::vector<Types>>>& mapping) {
+    return this->fp_->getOccurrences(mapping);
+}
+
 std::map<std::string, std::map<Types, int>> FilePattern::getOccurrencesByMap(Map& mapping) {
+    
     std::vector<std::tuple<std::string, std::vector<Types>>> variables_vector;
-    for(auto const& variable: variables){
-        variable_vector.push_back(make_tuple(variable.first, {variable.second}));
+    for(auto const& variable: mapping){
+        std::vector<Types> vec;
+        vec.push_back(variable.second);
+        variables_vector.push_back(std::make_tuple(variable.first, vec));
     }
     
     return this->fp_->getOccurrences(variables_vector);
-}
-
-std::map<std::string, std::map<Types, int>> FilePattern::getOccurrences(const std::vector<std::tuple<std::string, std::vector<Types>>>& mapping) {
-    return this->fp_->getOccurrences(mapping);
 }
 
 std::map<std::string, std::set<Types>> FilePattern::getUniqueValues(const std::vector<std::string>& mapping) {
@@ -130,6 +140,11 @@ std::vector<Tuple> FilePattern::getSlice(std::vector<Types>& key) {
     return this->fp_->getSlice(key);
 }
 
+std::vector<Tuple> FilePattern::getSliceByIdx(int key) {
+    std::vector<Types> vars {key, "None", "None"};
+    return this->fp_->getSlice(vars);
+}
+
 //std::string FilePattern::swSearch(std::string& pattern, std::string& filename, const std::string& variables) {
 //    return this->fp_->swSearch(pattern, filename, variables);
 //}
@@ -167,4 +182,20 @@ Tuple FilePattern::getItem(int key) {
 
 std::vector<Tuple> FilePattern::getItemList(std::vector<int>& key) {
     return this->fp_->getItemList(key);
+}
+
+int FilePattern::getSize() {
+    return this->fp_->valid_files_.size();
+}
+
+std::string FilePattern::getPattern() {
+    return this->fp_->file_pattern_;
+}
+
+void FilePattern::setPattern(std::string& pattern) {
+    this->fp_->file_pattern_ = pattern;
+}
+
+std::string FilePattern::getPath() {
+    return this->fp_->path_;
 }

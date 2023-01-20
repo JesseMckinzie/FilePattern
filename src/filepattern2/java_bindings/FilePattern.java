@@ -67,12 +67,16 @@ public class FilePattern implements Iterable {
         this.fp = patternFactory.getObject(builder);
         */
     }
+
+    public String getPattern() {
+        return this.fp.getPattern();
+    }
     
     public ArrayList<Pair<HashMap<String, Object>, ArrayList<Path>>> getMatching(HashMap<String, Object> keywordArgs) throws IllegalArgumentException {
 
         this.checkKeywordArgs(keywordArgs);
 
-        return FilePatternBindings.FilePatternVector.cast(fp.getMatching(FilePatternBindings.StringVariantMap.cast(keywordArgs)));
+        return FilePatternBindings.FilePatternVector.cast(fp.getMatchingByMap(FilePatternBindings.StringVariantMap.cast(keywordArgs)));
     } 
  
     public HashMap<String, HashMap<Object, Integer>> getOccurrences(HashMap<String, Object> keywordArgs) throws IllegalArgumentException {
@@ -99,12 +103,16 @@ public class FilePattern implements Iterable {
         return this.fp.getPath();
     }
 
+    public ArrayList<Pair<HashMap<String, Object>, ArrayList<Path>>> getFiles() {
+        return FilePatternBindings.TupleVector.cast(this.fp.getFiles());
+    }
+
     public Iterator<Pair<HashMap<String, Object>, ArrayList<Path>>> iterator() {
         return new FilePatternIterator(this);
     }
 
-    public Pair<HashMap<String, Object>, ArrayList<Path>> getAt(long index) {
-        return FilePatternBindings.Tuple.cast(this.fp.getSlice(index));
+    public Pair<HashMap<String, Object>, ArrayList<Path>> getAt(int index) {
+        return FilePatternBindings.TupleVector.cast(this.fp.getSliceByIdx(index)).get(0);
     }
 
     private void checkKeywordArgs(HashMap<String, Object> keywordArgs) throws IllegalArgumentException {
@@ -124,7 +132,7 @@ public class FilePattern implements Iterable {
 
     private class FilePatternIterator implements Iterator<Pair<HashMap<String, Object>, ArrayList<Path>>> {
 
-        private long current;
+        private int current;
         private FilePattern fp;
 
         public FilePatternIterator(FilePattern obj) {
@@ -133,7 +141,7 @@ public class FilePattern implements Iterable {
         }
 
         public boolean hasNext() {
-            return (current + 1) < this.fp.getSize();
+            return (current + 1) <= this.fp.getSize();
         }
 
         public Pair<HashMap<String, Object>, ArrayList<Path>> next() {
@@ -206,14 +214,42 @@ public class FilePattern implements Iterable {
 
         //ArrayList<Pair<HashMap<String, Object>, ArrayList<Path>>> vec = FilePatternVector.cast(files);
 
-        FilePattern fp = new FilePattern.FilePatternBuilder("/home/ec2-user/Dev/Demo/test_data/data").recursive(false)
-                                        .filePattern("img_r{r:ddd}_c{c:ddd}_{channel:c+}.tif")
+        FilePattern fp = new FilePattern.FilePatternBuilder("/home/jessemckinzie/Dev/data").recursive(false)
+                                        .filePattern("img_r00{r:d}_c00{c:d}_{channel:c+}.tif")
                                         .suppressWarnings(false)
                                         .blockSize("")
                                         .recursive(false).build();
 
+        System.out.println("Path: ");
+        System.out.println(fp.getPattern());
+
+        ArrayList<Pair<HashMap<String, Object>, ArrayList<Path>>> result = new ArrayList<Pair<HashMap<String, Object>, ArrayList<Path>>>();
+
+        //result = fp.getFiles();
+
+        //System.out.println("success");
+
+        /*
+        HashMap<String, Object> match = new HashMap<String, Object>();
+
+        match.put("r",  (int) 1);
+
+        result = fp.getMatching(match);
+
+        System.out.println(result.size());
+
+        for(Pair<HashMap<String, Object>, ArrayList<Path>> pair: result) {
+            System.out.println(pair.first);
+            System.out.print(pair.second);
+            System.out.println("");
+        }
+        */
+        
+
         Iterator<Pair<HashMap<String, Object>, ArrayList<Path>>> iter = fp.iterator();
 
-        System.out.println(iter.next());
+        for (Iterator i = fp.iterator(); i.hasNext(); ) {
+            System.out.println(i.next());
+        }
     }
 }

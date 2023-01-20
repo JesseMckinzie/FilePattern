@@ -9,6 +9,9 @@ class PatternObject {
         bool external = false;
 
         std::vector<Tuple> valid_files_; // Store files that match given regex
+
+        std::string path_;
+        std::string file_pattern_;
         
         std::vector<std::pair<std::vector<std::pair<std::string, Types>> , std::vector<Tuple>>> valid_grouped_files_; // 2D vector to store grouped files
         std::vector<std::string> group_; // current groupBy variable

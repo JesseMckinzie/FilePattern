@@ -25,10 +25,10 @@ class Pattern : public PatternObject {
     private:
     
         std::regex regex_expression_; // Regex expression
-        std::string file_pattern_; // Pattern to match files to
+        //std::string file_pattern_; // Pattern to match files to
         std::string path_pattern_;
         std::string regex_file_pattern_; // Pattern with capture groups
-        std::string path_;
+        //std::string path_;
         bool just_path_;
         bool suppress_warnings_;
 
