@@ -2,7 +2,7 @@ import filepattern2 as fp
 import filepattern as fpo
 import pprint
 
-path = '/home/ec2-user/Dev/data/mini/int'
+path = '/Users/jessemckinzie/Desktop/data/int'
 
 pattern = 'p{p:d}_y{y:d}_r{r:d}_c{c:d}.ome.tif'
 
