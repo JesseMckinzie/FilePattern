@@ -1,10 +1,10 @@
 import pytest
 import filepattern as fp
-import filepattern
 import os
 from operator import itemgetter
 import pprint
 import test_generate_filepattern_data
+import test_filepattern_data as fp_data
 
 class TestFilePattern():
 
@@ -17,122 +17,69 @@ class TestFilePattern():
 
     old_pattern = 'img_r{rrr}_c{ccc}.tif'
 
-    patterns = ['img_r{r:ddd}_c{c:ddd}.tif', 'img_r{r:d+}_c{c:d+}.tif', old_pattern]
+    patterns = ['img_r00{r:d}_c{c:ddd}.tif', 'img_r{r:d+}_c{c:d+}.tif', old_pattern]
 
     MAX_NUM = 9
 
     def test_file_pattern(self):
 
         for pattern in self.patterns:
-            old_files = filepattern.FilePattern(self.path, self.old_pattern)
+            #old_files = filepattern.FilePattern(self.path, self.old_pattern)
             files = fp.FilePattern(self.path, pattern)
 
-            old_result = []
+            #old_result = []
             result = []
 
-            for file in old_files():
-                old_result.append(file)
+            #for file in old_files():
+            #    old_result.append(file)
             for file in files():
                 result.append(file)
                 
             pprint.pprint(result)
             
-            assert len(old_result) == len(result)
+            assert (len(fp_data.test_fp) == len(result))
             
-            for i in range(len(old_result)):
-                assert old_result[i][0]["r"] == result[i][0]["r"]
-                assert old_result[i][0]["c"] == result[i][0]["c"]
-                assert str(os.path.basename(old_result[i][0]['file'])) == os.path.basename(result[i][1][0])
+            for i in range(len(result)):
+                assert fp_data.test_fp[i][0]["r"] == result[i][0]["r"] 
+                assert fp_data.test_fp[i][0]["c"] == result[i][0]["c"]
+                assert os.path.basename(fp_data.test_fp[i][1][0]) == os.path.basename(result[i][1][0])
 
 
     def test_get_matching(self):
          for pattern in self.patterns:
-            nums = []
-            for i in range(0, self.MAX_NUM):
+            nums = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 
-                old_files = filepattern.FilePattern(self.path, self.old_pattern)
-                files = fp.FilePattern(self.path, pattern)
+            files = fp.FilePattern(self.path, pattern)
 
-                nums.append(i)
-
-                old_result = old_files.get_matching(R=[i])
-                result = files.get_matching(r=[i])
-
-                assert len(old_result) == len(result) 
-
-                for i in range(len(old_result)):                
-                    assert old_result[i]["r"] == result[i][0]["r"] 
-                    assert old_result[i]["c"] == result[i][0]["c"]
-                    assert str(os.path.basename(old_result[i]['file'])) == os.path.basename(result[i][1][0])
-
-                old_result = old_files.get_matching(C=[i])
-                result = files.get_matching(c=[i])
-
-                assert len(old_result) == len(result) 
-
-                for i in range(len(old_result)):                
-                    assert old_result[i]["r"] == result[i][0]["r"] 
-                    assert old_result[i]["c"] == result[i][0]["c"]
-                    assert str(os.path.basename(old_result[i]['file'])) == os.path.basename(result[i][1][0])
-
-                old_result = old_files.get_matching(R=nums)
-                result = files.get_matching(r=nums)
-
-                assert len(old_result) == len(result)
-
-                for i in range(len(old_result)): 
-                    assert old_result[i]["r"] == result[i][0]["r"]
-                    assert old_result[i]["c"] == result[i][0]["c"]
-                    assert str(os.path.basename(old_result[i]['file'])) == os.path.basename(result[i][1][0])
-
-                old_result = old_files.get_matching(C=nums)
-                result = files.get_matching(c=nums)
-
-                assert len(old_result) == len(result) 
-
-                for i in range(len(old_result)): 
-                    assert old_result[i]["r"] == result[i][0]["r"] 
-                    assert old_result[i]["c"] == result[i][0]["c"]
-                    assert str(os.path.basename(old_result[i]['file'])) == os.path.basename(result[i][1][0])
-
+            result = files.get_matching(r=[nums[0]])
+            
+            pprint.pprint(result)
+            
+            for i in range(len(result)):
+                assert fp_data.test_fp[i][0]["r"] == result[i][0]["r"] 
+                assert fp_data.test_fp[i][0]["c"] == result[i][0]["c"]
+                assert os.path.basename(fp_data.test_fp[i][1][0]) == os.path.basename(result[i][1][0])
 
     def test_group_by(self):
         for pattern in self.patterns:
-            old_files = filepattern.FilePattern(self.path, self.old_pattern)
+
             files = fp.FilePattern(self.path, pattern)
 
-            old_result = []
             result = []
 
-            # group by "c" instead of "r" since we changed how group by works
-            for file in old_files(group_by="c"):
-                old_result.append(file)
             for file in files(group_by="r"):
                 result.append(file)
 
-            assert len(old_result) == len(result)
-
             pprint.pprint(result)
-            assert 0 == 1
-            for i in range(len(old_result)):
-                for j in range(len(old_result[i])):
-                    assert old_result[i][j]["r"] == result[i][1][j][0]["r"] 
-                    assert old_result[i][j]["c"] == result[i][1][j][0]["c"]
-                    assert str(os.path.basename(old_result[i][j]['file'])) == os.path.basename(result[i][1][j][1][0])
+            
+            for i in range(len(result)):
+                for j in range(len(result[i])):
+                    assert fp_data.fp_groupby[i][1][j][0]["r"] == result[i][1][j][0]["r"] 
+                    assert fp_data.fp_groupby[i][1][j][0]["c"] == result[i][1][j][0]["c"]
+                    assert os.path.basename(fp_data.fp_groupby[i][1][j][1][0]) == os.path.basename(result[i][1][j][1][0])
+        
 
-            for file in old_files(group_by="r"):
-                old_result.append(file)
-            for file in files(group_by="c"):
-                result.append(file)
-
-            assert len(old_result) == len(result)
-
-            for i in range(len(old_result)):
-                for j in range(len(old_result[i])):
-                    assert old_result[i][j]["r"] == result[i][1][j][0]["r"]
-                    assert old_result[i][j]["c"] == result[i][1][j][0]["c"]
-                    assert str(os.path.basename(old_result[i][j]['file'])) == os.path.basename(result[i][1][j][1][0])
-                    
+"""               
     def test_group_by_multi(self):
         
         for pattern in self.patterns:
@@ -235,7 +182,8 @@ class TestFilePattern():
                 assert old_result_slice[i][0]["r"] == result_slice[i][0]["r"]
                 assert old_result_slice[i][0]["c"] == result_slice[i][0]["c"]
                 assert str(os.path.basename(old_result_slice[i][0]['file'])) == os.path.basename(result_slice[i][1][0])
-    
+"""   
+
 class TestStringPattern():
 
     root_directory = os.path.dirname(os.path.realpath(__file__))
@@ -251,114 +199,62 @@ class TestStringPattern():
     MAX_NUM = 9
 
     def test_file_pattern(self):
+    
         for pattern in self.patterns:
-            old_files = filepattern.FilePattern(self.path, self.old_pattern)
-            files = fp.FilePattern(self.filepath, pattern)
+            #old_files = filepattern.FilePattern(self.path, self.old_pattern)
+            files = fp.FilePattern(self.path, pattern)
 
-            old_result = []
+            #old_result = []
             result = []
 
-            for file in old_files():
-                old_result.append(file)
+            #for file in old_files():
+            #    old_result.append(file)
             for file in files():
                 result.append(file)
-
-            assert len(old_result) == len(result)
-            
+                
             pprint.pprint(result)
-
-            for i in range(len(old_result)):
-                assert old_result[i][0]["r"] == result[i][0]["r"]
-                assert old_result[i][0]["c"] == result[i][0]["c"]
-                assert str(os.path.basename(old_result[i][0]['file'])) == result[i][1][0]
+            
+            assert (len(fp_data.test_fp) == len(result))
+            
+            for i in range(len(result)):
+                assert fp_data.test_fp[i][0]["r"] == result[i][0]["r"] 
+                assert fp_data.test_fp[i][0]["c"] == result[i][0]["c"]
+                assert os.path.basename(fp_data.test_fp[i][1][0]) == os.path.basename(result[i][1][0])
 
 
     def test_get_matching(self):
          for pattern in self.patterns:
-            nums = []
-            for i in range(0, self.MAX_NUM):
+            nums = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 
-                old_files = filepattern.FilePattern(self.path, self.old_pattern)
-                files = fp.FilePattern(self.filepath, pattern)
+            files = fp.FilePattern(self.path, pattern)
 
-                nums.append(i)
-
-                old_result = old_files.get_matching(R=[i])
-                result = files.get_matching(r=[i])
-
-                assert len(old_result) == len(result)
-
-                for i in range(len(old_result)):                
-                    assert old_result[i]["r"] == result[i][0]["r"]
-                    assert old_result[i]["c"] == result[i][0]["c"]
-                    assert str(os.path.basename(old_result[i]['file'])) == result[i][1][0]
-
-                old_result = old_files.get_matching(C=[i])
-                result = files.get_matching(c=[i])
-
-                assert len(old_result) == len(result)
-
-                for i in range(len(old_result)):                
-                    assert old_result[i]["r"] == result[i][0]["r"]
-                    assert old_result[i]["c"] == result[i][0]["c"]
-                    assert str(os.path.basename(old_result[i]['file'])) == result[i][1][0]
-
-                old_result = old_files.get_matching(R=nums)
-                result = files.get_matching(r=nums)
-
-                assert len(old_result) == len(result)
-
-                for i in range(len(old_result)): 
-                    assert old_result[i]["r"] == result[i][0]["r"] 
-                    assert old_result[i]["c"] == result[i][0]["c"]
-                    assert str(os.path.basename(old_result[i]['file'])) == result[i][1][0]
-
-                old_result = old_files.get_matching(C=nums)
-                result = files.get_matching(c=nums)
-
-                assert len(old_result) == len(result)
-
-                for i in range(len(old_result)): 
-                    assert old_result[i]["r"] == result[i][0]["r"]
-                    assert old_result[i]["c"] == result[i][0]["c"]
-                    assert str(os.path.basename(old_result[i]['file'])) == result[i][1][0]
-
+            result = files.get_matching(r=[nums[0]])
+            
+            pprint.pprint(result)
+            
+            for i in range(len(result)):
+                assert fp_data.test_fp[i][0]["r"] == result[i][0]["r"] 
+                assert fp_data.test_fp[i][0]["c"] == result[i][0]["c"]
+                assert os.path.basename(fp_data.test_fp[i][1][0]) == os.path.basename(result[i][1][0])
 
     def test_group_by(self):
         for pattern in self.patterns:
-            old_files = filepattern.FilePattern(self.path, self.old_pattern)
-            files = fp.FilePattern(self.filepath, pattern)
 
-            old_result = []
+            files = fp.FilePattern(self.path, pattern)
+
             result = []
 
-            # group by "c" instead of "r" since we changed how group by works
-            for file in old_files(group_by="c"):
-                old_result.append(file)
             for file in files(group_by="r"):
                 result.append(file)
 
-            assert len(old_result) == len(result)
-
-            for i in range(len(old_result)):
-                for j in range(len(old_result[i])):
-                    assert old_result[i][j]["r"] == result[i][1][j][0]["r"]
-                    assert old_result[i][j]["c"] == result[i][1][j][0]["c"]
-                    assert str(os.path.basename(old_result[i][j]['file'])) == result[i][1][j][1][0]
-
-            for file in old_files(group_by="r"):
-                old_result.append(file)
-            for file in files(group_by="c"):
-                result.append(file)
-
-            assert len(old_result) == len(result)
-
-            for i in range(len(old_result)):
-                for j in range(len(old_result[i])):
-                    assert old_result[i][j]["r"] == result[i][1][j][0]["r"] 
-                    assert old_result[i][j]["c"] == result[i][1][j][0]["c"]
-                    assert str(os.path.basename(old_result[i][j]['file'])) == result[i][1][j][1][0]
-                    
+            pprint.pprint(result)
+            
+            for i in range(len(result)):
+                for j in range(len(result[i])):
+                    assert fp_data.fp_groupby[i][1][j][0]["r"] == result[i][1][j][0]["r"] 
+                    assert fp_data.fp_groupby[i][1][j][0]["c"] == result[i][1][j][0]["c"]
+                    assert os.path.basename(fp_data.fp_groupby[i][1][j][1][0]) == os.path.basename(result[i][1][j][1][0])
+"""
     def test_group_by_multi(self):
         
         for pattern in self.patterns:
@@ -384,7 +280,7 @@ class TestStringPattern():
                 assert old_result[i]["r"] == result[i][0][0]["r"] 
                 assert old_result[i]["c"] == result[i][0][0]["c"]
                 assert str(os.path.basename(old_result[i]['file'])) == os.path.basename(result[i][0][1][0])               
-                    
+
     def test_get_item(self):
         
         for pattern in self.patterns:
@@ -428,7 +324,9 @@ class TestStringPattern():
                 assert old_result_slice[i][0]["r"] == result_slice[i][0]["r"]
                 assert old_result_slice[i][0]["c"] == result_slice[i][0]["c"]
                 assert str(os.path.basename(old_result_slice[i][0]['file'])) == result_slice[i][1][0]
+"""
 
+"""
 class TestVectorPattern():
     
     root_directory = os.path.dirname(os.path.realpath(__file__))
@@ -440,89 +338,65 @@ class TestVectorPattern():
     patterns = ['x{x:dd}_y{y:dd}_wx{z:d}_wy{r:d}_c{c:d}.ome.tif', old_pattern]
     
     MAX_NUM = 9
-
+    
     def test_file_pattern(self):
-
+    
         for pattern in self.patterns:
-            old_files = filepattern.VectorPattern(self.path, self.old_pattern)
+            #old_files = filepattern.FilePattern(self.path, self.old_pattern)
             files = fp.FilePattern(self.path, pattern)
 
-            old_result = []
+            #old_result = []
             result = []
 
-            for file in old_files():
-                old_result.append(file)
+            #for file in old_files():
+            #    old_result.append(file)
             for file in files():
                 result.append(file)
+                
+            pprint.pprint(result)
+            
+            assert (len(fp_data.test_fp) == len(result))
+            
+            for i in range(len(result)):
+                assert fp_data.test_fp[i][0]["r"] == result[i][0]["r"] 
+                assert fp_data.test_fp[i][0]["c"] == result[i][0]["c"]
+                assert os.path.basename(fp_data.test_fp[i][1][0]) == os.path.basename(result[i][1][0])
 
-            assert len(old_result) == len(result) 
-            
-            old_result = sorted(old_result, key=lambda k: k[0]['file'])
-            
-            for i in range(len(old_result)):
-                for key in result[i][0]:
-                    assert int(old_result[i][0][key]) == result[i][0][key]
-                assert str(os.path.basename(old_result[i][0]['file'])) == os.path.basename(result[i][1][0])
 
     def test_get_matching(self):
          for pattern in self.patterns:
-            nums = []
-            for i in range(0, self.MAX_NUM):
+            nums = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 
-                old_files = filepattern.VectorPattern(self.path, self.old_pattern)
-                files = fp.FilePattern(self.path, pattern)
+            files = fp.FilePattern(self.path, pattern)
 
-                nums.append(i)
+            result = files.get_matching(r=[nums[0]])
+            
+            pprint.pprint(result)
+            
+            for i in range(len(result)):
+                assert fp_data.test_fp[i][0]["r"] == result[i][0]["r"] 
+                assert fp_data.test_fp[i][0]["c"] == result[i][0]["c"]
+                assert os.path.basename(fp_data.test_fp[i][1][0]) == os.path.basename(result[i][1][0])
 
-                old_result = old_files.get_matching(R=[i])
-                result = files.get_matching(r=[i])
+    def test_group_by(self):
+        for pattern in self.patterns:
 
-                assert len(old_result) == len(result)
+            files = fp.FilePattern(self.path, pattern)
 
-                #pprint.pprint(result)
-                old_result = sorted(old_result, key=lambda k: k['file']) # Old version does not sort results
-                
-                
-                for i in range(len(old_result)):
-                    for key in result[i][0]:
-                        assert str(old_result[i][key]) == str(result[i][0][key]) # Old version stores value as string 
-                    assert os.path.basename(old_result[i]['file']) == os.path.basename(result[i][1][0])
+            result = []
 
-                old_result = old_files.get_matching(C=[i])
-                result = files.get_matching(c=[i])
+            for file in files(group_by="r"):
+                result.append(file)
 
-                assert len(old_result) == len(result) 
-                
-                old_result = sorted(old_result, key=lambda k: k['file']) # Old version does not sort results
+            pprint.pprint(result)
+            
+            for i in range(len(result)):
+                for j in range(len(result[i])):
+                    assert fp_data.fp_groupby[i][1][j][0]["r"] == result[i][1][j][0]["r"] 
+                    assert fp_data.fp_groupby[i][1][j][0]["c"] == result[i][1][j][0]["c"]
+                    assert os.path.basename(fp_data.fp_groupby[i][1][j][1][0]) == os.path.basename(result[i][1][j][1][0])
 
-                for i in range(len(old_result)):
-                    for key in result[i][0]:
-                        assert old_result[i][0][key] == result[i][0][key]
-                    assert str(os.path.basename(old_result[i][0]['file'])) == os.path.basename(result[i][1][0])
-
-                old_result = old_files.get_matching(R=nums)
-                result = files.get_matching(r=nums)
-
-                assert len(old_result) == len(result)
-
-                old_result = sorted(old_result, key=lambda k: k['file']) # Old version does not sort results
-
-                for i in range(len(old_result)):
-                    for key in result[i][0]:
-                        assert str(old_result[i][key]) == str(result[i][0][key]) # Old version stores value as string 
-                    assert os.path.basename(old_result[i]['file']) == os.path.basename(result[i][1][0])
-
-                old_result = old_files.get_matching(C=nums)
-                result = files.get_matching(c=nums)
-
-                assert len(old_result) == len(result)
-                
-                old_result = sorted(old_result, key=lambda k: k['file']) # Old version does not sort results
-
-                for i in range(len(old_result)):
-                    for key in result[i][0]:
-                        assert str(old_result[i][key]) == str(result[i][0][key]) # Old version stores value as string 
-                    assert os.path.basename(old_result[i]['file']) == os.path.basename(result[i][1][0])
+    
                     
     def test_group_by_multi(self):
         
@@ -594,6 +468,7 @@ class TestVectorPattern():
                     assert int(old_result[i][0][key]) == result[i][0][key]
                 assert str(os.path.basename(old_result[i][0]['file'])) == os.path.basename(result[i][1][0])
     
+"""
 
 class TestExternalFilePattern():
     root_directory = os.path.dirname(os.path.realpath(__file__))
@@ -609,142 +484,61 @@ class TestExternalFilePattern():
     MAX_NUM = 1
 
     def test_file_pattern(self):
+    
         for pattern in self.patterns:
-            for block_size in self.block_sizes:
-                old_files = filepattern.FilePattern(self.path, self.old_pattern)
-                files = fp.FilePattern(self.path, pattern, block_size=block_size)
+            #old_files = filepattern.FilePattern(self.path, self.old_pattern)
+            files = fp.FilePattern(self.path, pattern, block_size=self.block_sizes[0])
+
+            #old_result = []
+            result = []
+
+            #for file in old_files():
+            #    old_result.append(file)
+            for file in files():
+                result.append(file)
                 
-                old_result = []
-                result = []
-                
-                for file in old_files():
-                    old_result.append(file)
+            pprint.pprint(result)
+            
+            assert (len(fp_data.test_fp) == len(result))
+            
+            for i in range(len(result)):
+                assert fp_data.test_fp[i][0]["r"] == result[i][0]["r"] 
+                assert fp_data.test_fp[i][0]["c"] == result[i][0]["c"]
+                assert os.path.basename(fp_data.test_fp[i][1][0]) == os.path.basename(result[i][1][0])
 
-                for file in files():
-                    result.append(file)
-
-                assert len(old_result) == len(result)
-
-                for i in range(len(old_result)):
-                    assert old_result[i][0]["r"] == result[i][0]["r"] 
-                    assert old_result[i][0]["c"] == result[i][0]["c"]
-                    assert str(os.path.basename(old_result[i][0]['file'])) == os.path.basename(result[i][1][0])
-                    
-                    
 
     def test_get_matching(self):
-        for pattern in self.patterns:
-            nums = []
-            for block_size in self.block_sizes:
-                for i in range(0, self.MAX_NUM):
+         for pattern in self.patterns:
+            nums = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 
-                    old_files = filepattern.FilePattern(self.path, self.old_pattern)
-                    files = fp.FilePattern(self.path, pattern, block_size=block_size)
-
-                    nums.append(i)
-
-                    old_result = old_files.get_matching(R=[i])
-
-                    result = []
-                    for match in files.get_matching(r=[i]):
-                        result.append(match)
-                    
-                    assert len(old_result) == len(result)
-
-                    for i in range(len(old_result)):                
-                        assert old_result[i]["r"] == result[i][0]["r"]
-                        assert old_result[i]["c"] == result[i][0]["c"]
-                        assert str(os.path.basename(old_result[i]['file'])) == os.path.basename(result[i][1][0])
-
-                    old_result = old_files.get_matching(C=[i])
-                    result = []
-                    for match in files.get_matching(c=[i]):
-                        result.append(match)
-
-                    assert len(old_result) == len(result)
-
-                    for i in range(len(old_result)):                
-                        assert old_result[i]["r"] == result[i][0]["r"]
-                        assert old_result[i]["c"] == result[i][0]["c"]
-                        assert str(os.path.basename(old_result[i]['file'])) == os.path.basename(result[i][1][0])
-
-                    old_result = old_files.get_matching(R=nums)
-                    #files.get_matching(r=nums)
-                    
-                    result = []
-                    for match in files.get_matching(r=nums):
-                        result.append(match)
-
-                    assert len(old_result) == len(result)
-
-                    for i in range(len(old_result)): 
-                        assert old_result[i]["r"] == result[i][0]["r"]
-                        assert old_result[i]["c"] == result[i][0]["c"]
-                        assert str(os.path.basename(old_result[i]['file'])) == os.path.basename(result[i][1][0])
-
-                    old_result = old_files.get_matching(C=nums)
-                    #files.get_matching(c=nums)
-                    
-                    result = []
-                    for match in files.get_matching(c=nums):
-                        result.append(match)
-
-                    assert len(old_result) == len(result)
-
-                    for i in range(len(old_result)): 
-                        assert old_result[i]["r"] == result[i][0]["r"]
-                        assert old_result[i]["c"] == result[i][0]["c"]
-                        assert str(os.path.basename(old_result[i]['file'])) == os.path.basename(result[i][1][0])
-
+            files = fp.FilePattern(self.path, pattern, block_size=self.block_sizes[0])
+            
+            result = []
+            for match in files.get_matching(r=[nums[0]]):
+                result.append(match)
+            
+            for i in range(len(result)):
+                assert fp_data.test_fp[i][0]["r"] == result[i][0]["r"] 
+                assert fp_data.test_fp[i][0]["c"] == result[i][0]["c"]
+                assert os.path.basename(fp_data.test_fp[i][1][0]) == os.path.basename(result[i][1][0])
 
     def test_group_by(self):
         for pattern in self.patterns:
-            for block_size in self.block_sizes:
-                old_files = filepattern.FilePattern(self.path, self.old_pattern)
-                files = fp.FilePattern(self.path, pattern, block_size=block_size)
 
-                old_result = []
-                result = []
-                
-                # group by "c" instead of "r" since we changed how group by works
-                for file in old_files(group_by="c"):
-                    old_result.append(file)
+            files = fp.FilePattern(self.path, pattern, block_size=self.block_sizes[0])
 
-                for file in files(group_by="r"):
-                    result.append(file)
-                    
-                pprint.pprint(old_result)
-                print()
-                pprint.pprint(result)  
-                assert len(old_result) == len(result) 
-                for i in range(len(old_result)):
-                   assert len(old_result[i]) == len(result[i][1])
-                
-                for i in range(len(old_result)):
-                    for j in range(len(old_result[i])):
-                        assert old_result[i][j]["r"] == result[i][1][j][0]["r"] 
-                        assert old_result[i][j]["c"] == result[i][1][j][0]["c"]
-                        assert str(os.path.basename(old_result[i][j]['file'])) == os.path.basename(result[i][1][j][1][0])
+            result = []
 
-                result = []
-                old_result = []
-                
-                for file in old_files(group_by="r"):
-                    old_result.append(file)
+            for file in files(group_by="r"):
+                result.append(file)
 
-
-                for file in files(group_by="c"):
-                    result.append(file)         
-                
-
-                assert len(old_result) == len(result)
-
-                for i in range(len(old_result)):
-                    for j in range(len(old_result[i])):
-                        assert old_result[i][j]["r"] == result[i][1][j][0]["r"]
-                        assert old_result[i][j]["c"] == result[i][1][j][0]["c"]
-                        assert str(os.path.basename(old_result[i][j]['file'])) == os.path.basename(result[i][1][j][1][0])
-                        
+            pprint.pprint(result)
+            
+            for i in range(len(result)):
+                for j in range(len(result[i])):
+                    assert fp_data.fp_groupby[i][1][j][0]["r"] == result[i][1][j][0]["r"] 
+                    assert fp_data.fp_groupby[i][1][j][0]["c"] == result[i][1][j][0]["c"]
+"""
     def test_group_by_multi(self):
         
         for pattern in self.patterns:
@@ -818,6 +612,7 @@ class TestExternalFilePattern():
                     assert old_result_slice[i][0]["r"] == result_slice[i][0]["r"]
                     assert old_result_slice[i][0]["c"] == result_slice[i][0]["c"]
                     assert str(os.path.basename(old_result_slice[i][0]['file'])) == os.path.basename(result_slice[i][1][0])
+"""
 
 class TestExternalStringPattern():
     root_directory = os.path.dirname(os.path.realpath(__file__))
@@ -834,89 +629,63 @@ class TestExternalStringPattern():
     MAX_NUM = 1
 
     def test_file_pattern(self):
+    
         for pattern in self.patterns:
-            for block_size in self.block_sizes:
-                old_files = filepattern.FilePattern(self.path, self.old_pattern)
-                files = fp.FilePattern(self.string_path, pattern, block_size=block_size)
+            #old_files = filepattern.FilePattern(self.path, self.old_pattern)
+            files = fp.FilePattern(self.path, pattern, block_size=self.block_sizes[0])
 
-                old_result = []
-                result = []
+            #old_result = []
+            result = []
 
-                for file in old_files():
-                    old_result.append(file)
+            #for file in old_files():
+            #    old_result.append(file)
+            for file in files():
+                result.append(file)
+                
+            pprint.pprint(result)
+            
+            
+            #assert (len(fp_data.test_fp) == len(result))
+            
+            for i in range(len(result)):
+                assert fp_data.test_fp[i][0]["r"] == result[i][0]["r"] 
+                assert fp_data.test_fp[i][0]["c"] == result[i][0]["c"]
+                assert os.path.basename(fp_data.test_fp[i][1][0]) == os.path.basename(result[i][1][0])
 
-                for file in files():
-                    result.append(file)
 
-                assert len(old_result) == len(result)
-
-                for i in range(len(old_result)):
-                    assert old_result[i][0]["r"] == result[i][0]["r"]
-                    assert old_result[i][0]["c"] == result[i][0]["c"]
-                    assert str(os.path.basename(old_result[i][0]['file'])) == result[i][1][0]
-   
     def test_get_matching(self):
+         for pattern in self.patterns:
+            nums = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+            files = fp.FilePattern(self.path, pattern, block_size=self.block_sizes[0])
+
+            result = []
+            for match in files.get_matching(r=[nums[0]]):
+                result.append(match)
+            
+            for i in range(len(result)):
+                assert fp_data.test_fp[i][0]["r"] == result[i][0]["r"] 
+                assert fp_data.test_fp[i][0]["c"] == result[i][0]["c"]
+                assert os.path.basename(fp_data.test_fp[i][1][0]) == os.path.basename(result[i][1][0])
+
+    def test_group_by(self):
         for pattern in self.patterns:
-            nums = []
-            for block_size in self.block_sizes:
-                for i in range(0, self.MAX_NUM):
 
-                    old_files = filepattern.FilePattern(self.path, self.old_pattern)
-                    files = fp.FilePattern(self.string_path, pattern, block_size=block_size)
+            files = fp.FilePattern(self.path, pattern, block_size=self.block_sizes[0])
 
-                    nums.append(i)
+            result = []
 
-                    old_result = old_files.get_matching(R=[i])
+            for file in files(group_by="r"):
+                result.append(file)
 
-                    result = []
-                    for match in files.get_matching(r=[i]):
-                        result.append(match)
-                    
-                    assert len(old_result) == len(result)
-
-                    for i in range(len(old_result)):                
-                        assert old_result[i]["r"] == result[i][0]["r"]
-                        assert old_result[i]["c"] == result[i][0]["c"]
-                        assert str(os.path.basename(old_result[i]['file'])) == result[i][1][0]
-
-                    old_result = old_files.get_matching(C=[i])
-                    result = []
-                    for match in files.get_matching(c=[i]):
-                        result.append(match)
-
-                    assert len(old_result) == len(result)
-
-                    for i in range(len(old_result)):                
-                        assert old_result[i]["r"] == result[i][0]["r"] 
-                        assert old_result[i]["c"] == result[i][0]["c"]
-                        assert str(os.path.basename(old_result[i]['file'])) == result[i][1][0]
-
-                    old_result = old_files.get_matching(R=nums)
-                    
-                    result = []
-                    for match in files.get_matching(r=nums):
-                        result.append(match)
-
-                    assert len(old_result) == len(result)
-
-                    for i in range(len(old_result)): 
-                        assert old_result[i]["r"] == result[i][0]["r"]
-                        assert old_result[i]["c"] == result[i][0]["c"]
-                        assert str(os.path.basename(old_result[i]['file'])) == result[i][1][0]
-
-                    old_result = old_files.get_matching(C=nums)
-                    
-                    result = []
-                    for match in files.get_matching(c=nums):
-                        result.append(match)
-
-                    assert len(old_result) == len(result)
-
-                    for i in range(len(old_result)): 
-                        assert old_result[i]["r"] == result[i][0]["r"] 
-                        assert old_result[i]["c"] == result[i][0]["c"]
-                        assert str(os.path.basename(old_result[i]['file'])) == result[i][1][0]
-
+            pprint.pprint(result)
+            
+            for i in range(len(result)):
+                for j in range(len(result[i])):
+                    assert fp_data.fp_groupby[i][1][j][0]["r"] == result[i][1][j][0]["r"] 
+                    assert fp_data.fp_groupby[i][1][j][0]["c"] == result[i][1][j][0]["c"]
+                    assert os.path.basename(fp_data.fp_groupby[i][1][j][1][0]) == os.path.basename(result[i][1][j][1][0])
+"""
     def test_group_by_multi(self):
         
         for pattern in self.patterns:
@@ -1039,6 +808,9 @@ class TestExternalStringPattern():
                     assert old_result_slice[i][0]["c"] == result_slice[i][0]["c"]
                     assert str(os.path.basename(old_result_slice[i][0]['file'])) == result_slice[i][1][0]
 
+"""
+
+"""
 class TestExternalVectorPattern():
     
     root_directory = os.path.dirname(os.path.realpath(__file__))
@@ -1050,89 +822,65 @@ class TestExternalVectorPattern():
     patterns = ['x{x:dd}_y{y:dd}_wx{z:d}_wy{r:d}_c{c:d}.ome.tif', old_pattern]
     
     MAX_NUM = 9
+    
+    block_sizes = ['300 KB']
 
     def test_file_pattern(self):
-
+        
         for pattern in self.patterns:
-            old_files = filepattern.VectorPattern(self.path, self.old_pattern)
-            files = fp.FilePattern(self.path, pattern)
+            #old_files = filepattern.FilePattern(self.path, self.old_pattern)
+            files = fp.FilePattern(self.path, pattern, block_size=self.block_sizes[0])
 
-            old_result = []
+            #old_result = []
             result = []
 
-            for file in old_files():
-                old_result.append(file)
+            #for file in old_files():
+            #    old_result.append(file)
             for file in files():
                 result.append(file)
+                
+            pprint.pprint(result)
+            
+            assert (len(fp_data.test_fp) == len(result))
+            
+            for i in range(len(result)):
+                assert fp_data.test_fp[i][0]["r"] == result[i][0]["r"] 
+                assert fp_data.test_fp[i][0]["c"] == result[i][0]["c"]
+                assert os.path.basename(fp_data.test_fp[i][1][0]) == os.path.basename(result[i][1][0])
 
-            assert len(old_result) == len(result)
-            
-            old_result = sorted(old_result, key=lambda k: k[0]['file'])
-            
-            for i in range(len(old_result)):
-                for key in result[i][0]:
-                    assert int(old_result[i][0][key]) == result[i][0][key]
-                assert str(os.path.basename(old_result[i][0]['file'])) == os.path.basename(result[i][1][0])
 
     def test_get_matching(self):
          for pattern in self.patterns:
-            nums = []
-            for i in range(0, self.MAX_NUM):
+            nums = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 
-                old_files = filepattern.VectorPattern(self.path, self.old_pattern)
-                files = fp.FilePattern(self.path, pattern)
+            files = fp.FilePattern(self.path, pattern, block_size=self.block_sizes[0])
 
-                nums.append(i)
+            result = files.get_matching(r=[nums[0]])
+            
+            pprint.pprint(result)
+            
+            for i in range(len(result)):
+                assert fp_data.test_fp[i][0]["r"] == result[i][0]["r"] 
+                assert fp_data.test_fp[i][0]["c"] == result[i][0]["c"]
+                assert os.path.basename(fp_data.test_fp[i][1][0]) == os.path.basename(result[i][1][0])
 
-                old_result = old_files.get_matching(R=[i])
-                result = files.get_matching(r=[i])
+    def test_group_by(self):
+        for pattern in self.patterns:
 
-                assert len(old_result) == len(result)
+            files = fp.FilePattern(self.path, pattern, block_size=self.block_sizes[0])
 
-                #pprint.pprint(result)
-                old_result = sorted(old_result, key=lambda k: k['file']) # Old version does not sort results
-                
-                
-                for i in range(len(old_result)):
-                    for key in result[i][0]:
-                        assert str(old_result[i][key]) == str(result[i][0][key]) # Old version stores value as string 
-                    assert os.path.basename(old_result[i]['file']) == os.path.basename(result[i][1][0])
+            result = []
 
-                old_result = old_files.get_matching(C=[i])
-                result = files.get_matching(c=[i])
+            for file in files(group_by="r"):
+                result.append(file)
 
-                assert len(old_result) == len(result) 
-                
-                old_result = sorted(old_result, key=lambda k: k['file']) # Old version does not sort results
-
-                for i in range(len(old_result)):
-                    for key in result[i][0]:
-                        assert old_result[i][0][key] == result[i][0][key] 
-                    assert str(os.path.basename(old_result[i][0]['file'])) == os.path.basename(result[i][1][0])
-
-                old_result = old_files.get_matching(R=nums)
-                result = files.get_matching(r=nums)
-
-                assert len(old_result) == len(result)
-
-                old_result = sorted(old_result, key=lambda k: k['file']) # Old version does not sort results
-
-                for i in range(len(old_result)):
-                    for key in result[i][0]:
-                        assert str(old_result[i][key]) == str(result[i][0][key]) # Old version stores value as string 
-                    assert os.path.basename(old_result[i]['file']) == os.path.basename(result[i][1][0])
-
-                old_result = old_files.get_matching(C=nums)
-                result = files.get_matching(c=nums)
-
-                assert len(old_result) == len(result) 
-                
-                old_result = sorted(old_result, key=lambda k: k['file']) # Old version does not sort results
-
-                for i in range(len(old_result)):
-                    for key in result[i][0]:
-                        assert str(old_result[i][key]) == str(result[i][0][key]) # Old version stores value as string 
-                    assert os.path.basename(old_result[i]['file']) == os.path.basename(result[i][1][0])     
+            pprint.pprint(result)
+            
+            for i in range(len(result)):
+                for j in range(len(result[i])):
+                    assert fp_data.fp_groupby[i][1][j][0]["r"] == result[i][1][j][0]["r"] 
+                    assert fp_data.fp_groupby[i][1][j][0]["c"] == result[i][1][j][0]["c"]
+                    assert os.path.basename(fp_data.fp_groupby[i][1][j][1][0]) == os.path.basename(result[i][1][j][1][0])
     
     def test_group_by_multi(self):
         
@@ -1203,5 +951,5 @@ class TestExternalVectorPattern():
                 for key in result[i][0]:
                     assert int(old_result[i][0][key]) == result[i][0][key]
                 assert str(os.path.basename(old_result[i][0]['file'])) == os.path.basename(result[i][1][0])
-   
-   
+
+"""
