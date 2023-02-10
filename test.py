@@ -1,4 +1,4 @@
-import filepattern2 as fp
+import filepattern as fp
 path = "/Users/jessemckinzie/Desktop/data/int"
 
 #pattern = fp.infer_pattern(path=path, variables='', block_size='50 GB')

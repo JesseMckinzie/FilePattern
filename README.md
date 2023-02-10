@@ -7,22 +7,22 @@ a directory containing segmented images where the name contains information such
 extract all images containing such a naming pattern, filter by the row or column value, or group files by one or more of the aforementioned variables. 
 
 ## Summary
-* [Read the Docs](https://filepattern2.readthedocs.io/en/latest/Home.html)
+* [Read the Docs](https://filepattern.readthedocs.io/en/latest/Home.html)
 
 ## Install
 
-`filepattern2` is pip installable from https://test.pypi.org/project/filepattern2/.
+`filepattern` is pip installable from https://test.pypi.org/project/filepattern/.
 
 ### Build and Install
 
-Alternatively, `filepattern2` can be installed from this repo. This install requires GCC 8+ and CMake version 3.2 or greater.
+Alternatively, `filepattern` can be installed from this repo. This install requires GCC 8+ and CMake version 3.2 or greater.
 
-To install `filepattern2`:
+To install `filepattern`:
 
 1. Clone repository with ```--recurse-submodules```
 2. cd to the folder and then run ```pip install .```
   
-After installation, use "import filepattern2" to import the module into Python.
+After installation, use "import filepattern" to import the module into Python.
 
 <h2 id="filepattern-section"> FilePattern </h2> 
 
@@ -39,7 +39,7 @@ In each of these filenames, there are three descriptors of the image: the row, t
 To have ``filepattern`` guess what the pattern is for a directory, the static method ``infer_pattern`` can be used:
 
 ```python
-import filepattern2 as fp 
+import filepattern as fp 
 
 path = 'path/to/directory'
 
@@ -59,7 +59,7 @@ Note that the ``infer_pattern`` can also guess the patterns from stitching vecto
 To retrieve files from a directory that match the ``filepattern``, an iterator is called on the `FilePattern` object, as shown below. A user specified custom pattern, such as the one below, or the guessed pattern can be passed to the constructor.
 
 ```python
-import filepattern2 as fp
+import filepattern as fp
 import pprint
 
 filepath = "path/to/directory"
@@ -98,7 +98,7 @@ As shown in this example, the output is a tuple where the first member is a map 
 In this case, the subdirectories are split by the channel. Recursive matching can be used as shown below.
 
 ```python
-import filepattern2 as fp
+import filepattern as fp
 import pprint
 
 filepath = "path/to/root/directory"
@@ -202,7 +202,7 @@ img_r002_c001_GFP.tif
 the images can be returned in groups where ``r`` is held constant by passing the parameter ``group_by='r'`` to the object iterator.
 
 ```python
-import filepattern2 as fp
+import filepattern as fp
 import pprint
 
 filepath = "path/to/directory"
@@ -257,7 +257,7 @@ The output is:
 ```
 
 ## Text files
-``filepattern2`` can also take in a text file as an input rather than a directory. To use this functionality, a path to a text file is supplied to the ``path`` variable rather than a directory. When a text file is passed as input, each line of the text file will be matched to the pattern. For example, a text file containing containing the strings
+``filepattern`` can also take in a text file as an input rather than a directory. To use this functionality, a path to a text file is supplied to the ``path`` variable rather than a directory. When a text file is passed as input, each line of the text file will be matched to the pattern. For example, a text file containing containing the strings
 ```
 img_r001_c001_DAPI.tif
 img_r001_c001_TXREAD.tif
@@ -267,7 +267,7 @@ img_r001_c001_GFP.tif
 can be matched to the pattern ```img_r{r:ddd}_c{c:ddd}_{channel:c+}.tif``` with:
 
 ```python
-import filepattern2 as fp
+import filepattern as fp
 import pprint
 
 filepath = "path/to/file.txt"
@@ -296,7 +296,7 @@ The ouput is:
 
 ## Stitching vectors
 
-``filepattern2`` can also take in stitching vectors as input. In this case, a path to a text file containing a stitching vector is passed to the ``path`` variable. A stitching vector has the following form,
+``filepattern`` can also take in stitching vectors as input. In this case, a path to a text file containing a stitching vector is passed to the ``path`` variable. A stitching vector has the following form,
 
 ```
 file: x01_y01_wx0_wy0_c1.ome.tif; corr: 0; position: (0, 0); grid: (0, 0);
@@ -308,7 +308,7 @@ file: x04_y01_wx0_wy0_c1.ome.tif; corr: 0; position: (10488, 0); grid: (9, 0);
 This stitching vector can be processed using 
 
 ```python
-import filepattern2 as fp
+import filepattern as fp
 
 filepath = 'path/to/stitching/vector.txt'
 
@@ -335,7 +335,7 @@ As shown in the output, ``filepattern`` not only captures the specified variable
 
 ## Out of core 
 
-``filepattern2`` has the ability to use external memory when the dataset is too large to fit in main memory, i.e. it utilizes disk memory along with RAM. It has the same functionality as ``filepattern``, however it takes in an addition parameter called `block_size`, which limits the amount of main memory used by ``filepattern``. Consider a directory containing the files:
+``filepattern`` has the ability to use external memory when the dataset is too large to fit in main memory, i.e. it utilizes disk memory along with RAM. It has the same functionality as ``filepattern``, however it takes in an addition parameter called `block_size`, which limits the amount of main memory used by ``filepattern``. Consider a directory containing the files:
 
 ```
 img_r001_c001_DAPI.tif
@@ -346,7 +346,7 @@ img_r001_c001_GFP.tif
 This directory can be processed with only one file in memory as:
 
 ```python
-import filepattern2 as fp
+import filepattern as fp
 import pprint
 
 filepath = "path/to/directory"

@@ -1,6 +1,6 @@
 import json, pytest
 from pathlib import Path
-import filepattern2 as fp
+import filepattern as fp
 
 json_path = Path(__file__).parent.parent.joinpath("plugin.json")
 with open(Path(__file__).with_name('test_infer_pattern_data.json'),'r') as fr:        

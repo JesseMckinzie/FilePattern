@@ -12,9 +12,9 @@ if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
   endif()
 endif()
 
-project(test_filepattern2)
+project(test_filepattern)
 # Set source directory
-set(SOURCE_DIR "../../src/filepattern2/cpp")
+set(SOURCE_DIR "../../src/filepattern/cpp")
 #Tell CMake that headers are also in SOURCE_DIR
 include_directories(${SOURCE_DIR})
 

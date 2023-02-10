@@ -13,7 +13,7 @@ from setuptools.command.build_ext import build_ext
 """
 if platform.system() == "Windows":
     setup(
-        name='filepattern2',
+        name='filepattern',
         version=versioneer.get_version(),
         cmdclass=versioneer.get_cmdclass(),
         author='Jesse McKinzie',
@@ -92,7 +92,7 @@ class CMakeBuild(build_ext):
         print()  # Add an empty line for cleaner output\
         
 setup(
-    name='filepattern2',
+    name='filepattern',
     version=versioneer.get_version(),
     cmdclass=versioneer.get_cmdclass(dict(build_ext=CMakeBuild)),
     author='Jesse McKinzie',
@@ -105,7 +105,7 @@ setup(
     package_dir={'':'src'},
     # add an extension module named 'python_cpp_example' to the package 
     # 'python_cpp_example'
-    ext_modules=[CMakeExtension('filepattern2/backend')],
+    ext_modules=[CMakeExtension('filepattern/backend')],
 
     zip_safe=False,
 )

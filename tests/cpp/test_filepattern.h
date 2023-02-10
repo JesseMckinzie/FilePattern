@@ -1,4 +1,4 @@
-#include "../../src/filepattern2/cpp/interface/filepattern.h"
+#include "../../src/filepattern/cpp/interface/filepattern.h"
 #include "test_truth_data.h"
 
 const static std::string path = "../tests/test_data/data100";

@@ -339,7 +339,7 @@ vector<Tuple> InternalPattern::getSlice(vector<Types>& key){
 
 }
 
-int InternalPattern::currentBlockLength() {}
+int InternalPattern::currentBlockLength() {return -1;}
 
 
 

@@ -1,5 +1,5 @@
 import pytest
-import filepattern2 as fp
+import filepattern as fp
 import filepattern
 import os
 from operator import itemgetter

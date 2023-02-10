@@ -172,13 +172,13 @@ class FilePattern(PatternObject):
     Class to create a FilePattern object.
 
     This class take in in 4 arguments: path, pattern, block_size, and recursive. For the path,
-    either a path to a directory, text file, or stitching vector may be provided. ``filepattern2`` will
+    either a path to a directory, text file, or stitching vector may be provided. ``filepattern`` will
     then match the filenames in the directory, or each line of the text file, to the provided ``pattern``.
 
     The ``block_size`` parameter allows for out of core processing, which consume ``block_size`` amount of memory at most.
 
     The ``recursive`` parameter enables recursive iteration of subdirectories when a directory is passed as ``path``. In
-    this case ``filepattern2`` will iterate over the subdirectories, storing filenames with the same basename in the same
+    this case ``filepattern`` will iterate over the subdirectories, storing filenames with the same basename in the same
     group.
 
 
