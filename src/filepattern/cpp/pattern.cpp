@@ -163,8 +163,8 @@ Tuple Pattern::getVariableMap(const string& filePath, const smatch& sm){
     Tuple tup;
     // filename matches the pattern
 
-    std::get<1>(tup).push_back(std::filesystem::path(filePath));
-
+    //std::get<1>(tup).push_back(std::filesystem::path(filePath));
+    std::get<1>(tup).push_back(filePath);
     
     string str;
     // Extract capture groups from filename and store in mapping
