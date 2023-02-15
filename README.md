@@ -13,6 +13,11 @@ extract all images containing such a naming pattern, filter by the row or column
 
 `filepattern` is pip installable from https://test.pypi.org/project/filepattern/.
 
+or by running
+
+pip install -i https://test.pypi.org/simple/ filepattern
+
+
 ### Build and Install
 
 Alternatively, `filepattern` can be installed from this repo. This install requires GCC 8+ and CMake version 3.2 or greater.
