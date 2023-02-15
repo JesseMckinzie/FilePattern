@@ -78,7 +78,22 @@ class TestFilePattern():
                     assert fp_data.fp_groupby[i][1][j][0]["c"] == result[i][1][j][0]["c"]
                     assert os.path.basename(fp_data.fp_groupby[i][1][j][1][0]) == os.path.basename(result[i][1][j][1][0])
         
+    def test_group_by_all(self):
+        for pattern in self.patterns:
+    
+            files = fp.FilePattern(self.path, pattern)
 
+            result = []
+
+            for file in files(group_by=[]):
+                result.append(file)
+
+            result = result[0][1]
+            
+            for i in range(len(result)):
+                assert fp_data.test_fp[i][0]["r"] == result[i][0]["r"] 
+                assert fp_data.test_fp[i][0]["c"] == result[i][0]["c"]
+                assert os.path.basename(fp_data.test_fp[i][1][0]) == os.path.basename(result[i][1][0])
 """               
     def test_group_by_multi(self):
         
@@ -685,6 +700,7 @@ class TestExternalStringPattern():
                     assert fp_data.fp_groupby[i][1][j][0]["r"] == result[i][1][j][0]["r"] 
                     assert fp_data.fp_groupby[i][1][j][0]["c"] == result[i][1][j][0]["c"]
                     assert os.path.basename(fp_data.fp_groupby[i][1][j][1][0]) == os.path.basename(result[i][1][j][1][0])
+    
 """
     def test_group_by_multi(self):
         

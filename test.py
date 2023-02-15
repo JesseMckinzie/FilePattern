@@ -1,11 +1,15 @@
 import filepattern as fp
-path = "/Users/jessemckinzie/Desktop/data/int"
+path = '/Users/jessemckinzie/Documents/GitHub/FilePattern/data'
 
-#pattern = fp.infer_pattern(path=path, variables='', block_size='50 GB')
+#pattern = fp.infer_pattern(path)
 
+#print(pattern)
 
-pat = fp.FilePattern(path, 'p{p:d}_y{y:d}_r{r:d}_c{c:d}.ome.tif')
+pat = fp.FilePattern(path, 'x{x:d}_y{y:d}.tif')
 
-for file in pat():
+#pat = fp.FilePattern(path, 'x{x}_y{y}.tif')
+
+for file in pat(group_by=[]):
     print(file)
+    print('------')
     

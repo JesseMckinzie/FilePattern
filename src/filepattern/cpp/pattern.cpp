@@ -24,7 +24,14 @@ void Pattern::getPathFromPattern(const string& path){
 }
 
 void Pattern::setGroup(const vector<string>& groups){
+
+    if (groups.size() == 1 && groups[0] == "*__all__*") {
+        this->group_ = groups;
+        return;
+    }
+
     for (const auto& group: groups) {
+
         if(find(this->variables_.begin(), this->variables_.end(), group) != this->variables_.end()) {
             continue;
             //this->group = group;

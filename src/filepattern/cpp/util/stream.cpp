@@ -38,6 +38,7 @@ void Stream::writeBlock(const vector<string>& vec){
 void Stream::writeValidFiles(const Tuple& mapping){
     counter++;
     ofstream file(valid_files, ios_base::app);
+
     //cout << "stream comments added" << endl;
     /*
     for(const auto& element: get<0>(mapping)){

@@ -122,6 +122,9 @@ class PatternObject:
             group_by: A string consisting of a single variable or a list of variables to group filenames by.
         """
         
+        if (group_by == []):
+            group_by = ['*__all__*']
+        
         if (isinstance(group_by, str)):
                 group_by = [group_by]
         self._file_pattern.setGroup(group_by)

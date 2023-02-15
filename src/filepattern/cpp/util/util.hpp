@@ -33,7 +33,11 @@
 
 typedef std::variant<int, std::string, double> Types;
 typedef std::map<std::string, Types> Map;
+#ifdef WITH_PYTHON_H
+typedef std::tuple<Map, std::vector<std::filesystem::path>> Tuple;
+#else 
 typedef std::tuple<Map, std::vector<std::string>> Tuple;
+#endif
 
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
 static const std::string SLASH = "\\";
@@ -357,7 +361,11 @@ namespace m {
         }
         size += sizeof(std::vector<std::string>);
         for (const auto& str : std::get<1>(mapping)) {
+            #ifdef WITH_PYTHON_H
+            size += str.u8string().length();
+            #else
             size += str.length();
+            #endif
         }
         return size;
     }
@@ -375,7 +383,11 @@ namespace m {
         }
 
         for (const auto& element : std::get<1>(mapping)) {
+            #ifdef WITH_PYTHON_H
+            file << element.string() << "," << '\n';
+            #else
             file << element << "," << '\n';
+            #endif
         }
 
     }
