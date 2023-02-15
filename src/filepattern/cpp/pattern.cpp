@@ -321,7 +321,11 @@ void Pattern::replaceOutputName(Tuple& min, Tuple& max, const string& var, strin
         smatch sm;
         if(get<0>(min)[var] == get<0>(max)[var]){
 
-            file = s::getBaseName(get<1>(min)[0]);
+            #ifdef WITH_PYTHON_H
+            file = s::getBaseName((get<1>(min)[0]).string()); // get basename of filepath
+            #else
+            file = s::getBaseName(get<1>(min)[0]); // get basename of filepath
+            #endif
             regex_match(file, sm, patternRegex);
         
             s::replace(outputName, this->named_groups_[idx], sm[idx+1]);
