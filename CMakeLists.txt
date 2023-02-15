@@ -45,6 +45,10 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
   target_link_libraries(backend PRIVATE stdc++fs)
 endif()
 
+if(BUILD_LIB)
+	target_compile_definitions(backend PRIVATE WITH_PYTHON_H)
+endif()
+
 option(RUN_GTEST "Downloads google unit test API and runs google test scripts to test Nyxus" OFF)
 set(RUN_GTEST ON)
 

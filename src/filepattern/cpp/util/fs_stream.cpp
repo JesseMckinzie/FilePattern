@@ -192,7 +192,11 @@ void FilesystemStream::writeValidFiles(const Tuple& mapping){
     }
 
     for(const auto& element: get<1>(mapping)){
-        file << element << ",";
+         #ifdef WITH_PYTHON_H
+        file << element.string() << "," << '\n';
+        #else
+        file << element << "," << '\n';
+        #endif
     } 
 
     file << '\n';

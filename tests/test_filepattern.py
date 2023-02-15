@@ -90,6 +90,10 @@ class TestFilePattern():
 
             result = result[0][1]
             
+            print(result)
+            
+            assert 0 == 1
+            
             for i in range(len(result)):
                 assert fp_data.test_fp[i][0]["r"] == result[i][0]["r"] 
                 assert fp_data.test_fp[i][0]["c"] == result[i][0]["c"]
