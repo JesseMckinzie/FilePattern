@@ -149,7 +149,11 @@ Tuple Pattern::getVariableMapMultDir(const string& filePath, const smatch& sm){
     string file = s::getBaseName(filePath);
     // iterate over matched files, checking if filename already exists
     for(int i = 0; i < this->valid_files_.size(); i++){ 
+        #ifdef WITH_PYTHON_H
+        basename = s::getBaseName(get<1>(this->valid_files_[i])[0].string()); // store the basename
+        #else
         basename = s::getBaseName(s::to_string(get<1>(this->valid_files_[i])[0])); // store the basename
+        #endif
         // if the filename is found, add the filepath to the vector in the second member of the tuple 
         if(basename == file){
             matched = true;
@@ -326,13 +330,21 @@ void Pattern::replaceOutputName(Tuple& min, Tuple& max, const string& var, strin
 
             temp = "("; 
 
+            #ifdef WITH_PYTHON_H
+            file = s::getBaseName((get<1>(min)[0]).string()); // get basename of filepath
+            #else
             file = s::getBaseName(get<1>(min)[0]); // get basename of filepath
+            #endif
             regex_match(file, sm, patternRegex); // find variables
 
             temp += sm[idx+1];
             temp += "-";
 
-            file = s::getBaseName(get<1>(max)[0]);
+            #ifdef WITH_PYTHON_H
+            file = s::getBaseName((get<1>(max)[0]).string()); // get basename of filepath
+            #else
+            file = s::getBaseName(get<1>(max)[0]); // get basename of filepath
+            #endif
             regex_match(file, sm, patternRegex);
 
             temp += sm[idx+1];
