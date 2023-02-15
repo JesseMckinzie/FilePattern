@@ -77,7 +77,7 @@ class CMakeBuild(build_ext):
             build_args += ['--', '/m']
         else:
             cmake_args += ['-DCMAKE_BUILD_TYPE=' + cfg]
-            cmake_args += [ '-DBUILD_LIB=ON']
+            cmake_args += ['-DBUILD_LIB=ON']
             build_args += ['--', '-j2']
 
         env = os.environ.copy()
