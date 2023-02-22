@@ -1,5 +1,7 @@
 from . import backend
 import re, pathlib
+from typing import Dict, List, Tuple, Union
+import os
 
 class PatternObject:
     def __init__(self, file_pattern, block_size):
@@ -108,7 +110,8 @@ class PatternObject:
         
         return self._file_pattern.getVariables()
 
-    def __call__(self, group_by=""):
+    def __call__(self, group_by="") -> Union[List[Tuple[List[Tuple[str, Union[str, int, float]]], List[Tuple[Dict[str, Union[int, float, str]], List[os.PathLike]]]]], 
+                                            Tuple[Dict[str, Union[int, float, str]], List[os.PathLike]]]:
         """Iterate thorugh files parsed using a filepattern
 
         This method returns an iterable of filenames matched to the filepattern. If
