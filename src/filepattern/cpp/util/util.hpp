@@ -36,7 +36,7 @@ typedef std::map<std::string, Types> Map;
 #ifdef WITH_PYTHON_H
 typedef std::tuple<Map, std::vector<std::filesystem::path>> Tuple;
 #else 
-typedef std::tuple<Map, std::vector<std::string>> Tuple;
+typedef std::tuple<Map, std::vector<std::filesystem::path>> Tuple;
 #endif
 
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
