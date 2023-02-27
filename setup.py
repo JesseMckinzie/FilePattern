@@ -63,7 +63,8 @@ class CMakeBuild(build_ext):
         extdir = os.path.abspath(
             os.path.dirname(self.get_ext_fullpath(ext.name)))
         cmake_args = ['-DCMAKE_LIBRARY_OUTPUT_DIRECTORY=' + extdir,
-                    '-DPYTHON_EXECUTABLE=' + sys.executable]
+                    '-DPYTHON_EXECUTABLE=' + sys.executable,
+                    '-DBUILD_LIB=ON']
         #cmake_args += ['-DBUILD_LIB=ON']
 
         cfg = 'Debug' if self.debug else 'Release'
@@ -91,22 +92,45 @@ class CMakeBuild(build_ext):
         subprocess.check_call(['cmake', '--build', '.'] + build_args,
                             cwd=self.build_temp)
         print()  # Add an empty line for cleaner output\
-        
-setup(
-    name='filepattern',
-    version=versioneer.get_version(),
-    cmdclass=versioneer.get_cmdclass(dict(build_ext=CMakeBuild)),
-    author='Jesse McKinzie',
-    description='Hybrid Python/C++ filepattern with external memory algorithms',
-    long_description='',
-    # tell setuptools to look for any packages under 'src'
-    packages=find_packages('src'),
-    # tell setuptools that all packages will be under the 'src' directory
-    # and nowhere else
-    package_dir={'':'src'},
-    # add an extension module named 'python_cpp_example' to the package 
-    # 'python_cpp_example'
-    ext_modules=[CMakeExtension('filepattern/backend')],
 
-    zip_safe=False,
-)
+if platform.system() == "Windows":
+    setup(
+        name='filepattern',
+        version=versioneer.get_version(),
+        cmdclass=versioneer.get_cmdclass(),
+        author='Jesse McKinzie',
+        description='Hybrid Python/C++ filepattern with external memory algorithms',
+        long_description='',
+        # tell setuptools to look for any packages under 'src'
+        packages=find_packages('src'),
+        # tell setuptools that all packages will be under the 'src' directory
+        # and nowhere else
+        package_dir={'':'src'},
+        # add an extension module named 'python_cpp_example' to the package 
+        # 'python_cpp_example'
+        #ext_modules=[ Extension(name='backend',  # using dots!
+        #              sources=['backend.pyd'])],
+        # add custom build_ext command
+        #cmdclass=dict(build_ext=CMakeBuild),
+        include_package_data=True,
+        zip_safe=False,
+    )
+else:
+    setup(
+        name='filepattern',
+        version=versioneer.get_version(),
+        cmdclass=versioneer.get_cmdclass(dict(build_ext=CMakeBuild)),
+        author='Jesse McKinzie',
+        description='Hybrid Python/C++ filepattern with external memory algorithms',
+        long_description='',
+        # tell setuptools to look for any packages under 'src'
+        packages=find_packages('src'),
+        # tell setuptools that all packages will be under the 'src' directory
+        # and nowhere else
+        package_dir={'':'src'},
+        # add an extension module named 'python_cpp_example' to the package 
+        # 'python_cpp_example'
+        ext_modules=[CMakeExtension('filepattern/backend')],
+
+        zip_safe=False,
+    )
