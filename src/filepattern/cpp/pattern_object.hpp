@@ -52,8 +52,6 @@ class PatternObject {
 
         virtual std::vector<Tuple> getSlice(std::vector<Types>& key) = 0;
 
-        //virtual std::string swSearch(std::string& pattern, std::string& filename, const std::string& variables) = 0;
-
         virtual std::string inferPattern(const std::string& path, std::string& variables, const std::string& block_size) = 0;
 
         virtual std::string inferPattern(std::vector<std::string>& vec, std::string& variables) = 0;
@@ -63,6 +61,8 @@ class PatternObject {
         virtual Tuple getItem(int key) = 0;
 
         virtual std::vector<Tuple> getItemList(std::vector<int>& key) = 0;
+
+        size_t length() const {return valid_files_.size();};
 
 };
 

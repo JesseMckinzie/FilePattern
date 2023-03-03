@@ -92,6 +92,8 @@ class FilePattern {
 
         int getSize();
 
+        size_t length() {return fp_->valid_files_.size();}
+
         std::string getPattern();
         void setPattern(std::string& pattern);
         std::string getPath();

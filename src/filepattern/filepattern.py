@@ -106,6 +106,10 @@ class PatternObject:
 
         return self._file_pattern.outputName(files)
     
+    def __len__(self):
+        
+        return self._file_pattern.length()
+    
     def get_variables(self):
         
         return self._file_pattern.getVariables()

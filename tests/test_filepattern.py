@@ -39,6 +39,8 @@ class TestFilePattern():
             
             assert (len(fp_data.test_fp) == len(result))
             
+            assert (len(result) == len(files)) # test length operator
+            
             for i in range(len(result)):
                 assert fp_data.test_fp[i][0]["r"] == result[i][0]["r"] 
                 assert fp_data.test_fp[i][0]["c"] == result[i][0]["c"]

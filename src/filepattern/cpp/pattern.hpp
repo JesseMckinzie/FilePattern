@@ -236,4 +236,5 @@ class Pattern : public PatternObject {
          * @return std::vector<std::string> Vector of paths to temporary directories used.
          */
         std::vector<std::string> getTmpDirs();
+
 };
