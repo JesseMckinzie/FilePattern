@@ -9,6 +9,7 @@ class PatternObject:
         self._block_size = block_size
 
     def get_matching(self, **kwargs) -> list:
+        
         """Get all filenames matching specific values
 
         Args:
@@ -207,7 +208,7 @@ class FilePattern(PatternObject):
         recursive: bool = False,
         suppress_warnings = False
     ):
-        """Constructor of the Pattern class. The path argument can either be a directory, a text file,
+        """Constructor of the FilePattern class. The path argument can either be a directory, a text file,
         or a stitching vector. Passing in the optional argument `block_size` will
         create an ExternalFilePattern object, which will process the directory in blocks which consume less
         than or equal to `block_size` of memory.
@@ -222,6 +223,7 @@ class FilePattern(PatternObject):
             pattern: Pattern to compare each filename to
             block_size: Maximum amount of RAM to consume at once. Defaults to "".
             recursive: Iterate over subdirectories. Defaults to False.
+            supress_warnings: True to suppress warning printed to console. Defaults to False.
         """
 
        
