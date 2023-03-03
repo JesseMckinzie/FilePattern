@@ -11,9 +11,15 @@ class PatternObject:
     def get_matching(self, **kwargs) -> List[Tuple[Dict[str, Union[int, float, str]], List[os.PathLike]]]:
         
         """Get all filenames matching specific values
+        
+        This method will return a list containing all files where the variable matches the supplied. For example,
+        if the argument `x=1` is passed to get matching, all files where x is 1 will be returned. A list of values 
+        can also be passed, such as `x=[1,2,3]`. Futhermore, an arbitrary number of variables and values can be passed,
+        such as `x=1, y=2, z=3` or `x=[1,2,3], y=['a', 'b', 'c'], z=[4, 5, 6]`.
 
         Args:
-            **kwargs: One of the variables contained in the pattern
+            **kwargs: One or more keyword arguments where the key is a variable contained in the filepattern and 
+                    the value is a value for the variable
 
         Returns:
             List of matching files
@@ -32,6 +38,13 @@ class PatternObject:
             return self._get_matching_out_of_core(mapping)
 
     def _get_matching_out_of_core(self, mapping) -> List[Tuple[Dict[str, Union[int, float, str]], List[os.PathLike]]]:
+        """get_matching functionality for out of core algorithms
+        
+        This method is called by get_mapping and should not be used directly.
+        
+        This function will yield blocks of the get_matching functionality for external memory filepattern objects.
+        """
+        
         try:
             self._file_pattern.getMatching(mapping)
 
@@ -48,11 +61,12 @@ class PatternObject:
 
     def _get_matching_block(self) -> List[Tuple[Dict[str, Union[int, float, str]], List[os.PathLike]]]:
         """
-        Returns block of mathing files of size less than or equal to block_size.
+        Returns block of matching files of size less than or equal to block_size.
+        
+        This method should not be called directly. Must be called after making a call to get_matching.
 
-        Must be called after making a call to get_matching.
-
-        @return list Block of matching files.
+        Returns:
+            List containing a block of matching files.
         """
 
         try:
@@ -60,7 +74,7 @@ class PatternObject:
         except ValueError as e:
             print(e)
 
-    def get_occurrences(self, mapping) -> Dict[str, Dict[Union[int, float, str], int]]:
+    def get_occurrences(self, mapping: List[Tuple[str, List[Union[int, float, str]]]]) -> Dict[str, Dict[Union[int, float, str], int]]:
         """
         Returns the unique values for each variable along with the number of occurrences for each value.
 
@@ -74,7 +88,7 @@ class PatternObject:
 
         return self._file_pattern.getOccurrences(mapping)
 
-    def get_unique_values(self, vec) -> Dict[str, set[int, float, str]]:
+    def get_unique_values(self, vec: List[str]) -> Dict[str, set[int, float, str]]:
         """Returns the unique values for each variable.
 
         This method returns a dictionary of provided variables to a list of all unique occurrences. If no variables are provided,
@@ -89,7 +103,7 @@ class PatternObject:
 
         return self._file_pattern.getUniqueValues(vec)
 
-    def output_name(self, files: list = []) -> str:
+    def output_name(self, files: List[Tuple[Dict[str, Union[int, float, str]], List[os.PathLike]]] = []) -> str:
         """Returns a single filename that captures variables from a list of files.
 
         Given a list of files, this method will return a single filename that captures the variables from each
@@ -115,12 +129,13 @@ class PatternObject:
         
         return self._file_pattern.getVariables()
 
-    def __call__(self, group_by="") -> Union[List[Tuple[List[Tuple[str, Union[str, int, float]]], List[Tuple[Dict[str, Union[int, float, str]], List[os.PathLike]]]]], 
+    def __call__(self, group_by: Union[str, List[str]]="") -> Union[List[Tuple[List[Tuple[str, Union[str, int, float]]], List[Tuple[Dict[str, Union[int, float, str]], List[os.PathLike]]]]], 
                                             Tuple[Dict[str, Union[int, float, str]], List[os.PathLike]]]:
         """Iterate through files parsed using a filepattern
 
-        This method returns an iterable of filenames matched to the filepattern. If
-        a group_by variable is provided, lists of files where the variable is held constant are
+        This method returns an iterable of filenames matched to the filepattern. 
+        
+        If a group_by variable is provided, lists of files where the variable is held constant are
         returned on each call.
         
         Note that the `group_by` argument works in the inverse of the previous version of `filepattern`. 
@@ -147,10 +162,19 @@ class PatternObject:
         return self
 
     def _length(self) -> int:
+        """Get length of current block for out of core algorithms
+        """
         return self._file_pattern.currentBlockLength()
 
-    def __iter__(self):
-        """Returns an iterator of files matched to the pattern"""
+    def __iter__(self) -> Union[List[Tuple[List[Tuple[str, Union[str, int, float]]], List[Tuple[Dict[str, Union[int, float, str]], List[os.PathLike]]]]], 
+                                            Tuple[Dict[str, Union[int, float, str]], List[os.PathLike]]]:
+        """Yields files from files that match the filepattern
+        
+        Yields:
+            Union[List[Tuple[List[Tuple[str, Union[str, int, float]]], List[Tuple[Dict[str, Union[int, float, str]], List[os.PathLike]]]]], 
+                  Tuple[Dict[str, Union[int, float, str]], List[os.PathLike]]] : Returns single file when group_by is not used and list of files otherwise
+        """
+        
         if self._block_size == "":
             for file in self._file_pattern.__iter__():
                 yield file
@@ -168,13 +192,18 @@ class PatternObject:
                 
     def __getitem__(self, key) -> Union[List[Tuple[Dict[str, Union[int, float, str]], List[os.PathLike]]],
                                     Tuple[Dict[str, Union[int, float, str]], List[os.PathLike]]]:
-        """_summary_
+        """Get slices of files that match the filepattern
+        
+        Slices of files can be retrieved using [] operator. Files can be accessed using a single index
+        such as fp[1] or slices of files, such as fp[:10], f[1:10], or fp[1:2:10].
 
         Args:
-            key (_type_): _description_
+            key (int): Index of file
 
         Returns:
-            _type_: _description_
+            Union[List[Tuple[Dict[str, Union[int, float, str]], List[os.PathLike]]],
+                Tuple[Dict[str, Union[int, float, str]], List[os.PathLike]]]: Returns single file for a single index or a List
+                of files for a slice.
         """
     
         if(type(key) == int): return self._file_pattern.getItem(key)
