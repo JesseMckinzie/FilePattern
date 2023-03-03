@@ -8,7 +8,7 @@ class PatternObject:
         self._file_pattern = file_pattern
         self._block_size = block_size
 
-    def get_matching(self, **kwargs) -> list:
+    def get_matching(self, **kwargs) -> List[Tuple[Dict[str, Union[int, float, str]], List[os.PathLike]]]:
         
         """Get all filenames matching specific values
 
@@ -31,7 +31,7 @@ class PatternObject:
         else:
             return self._get_matching_out_of_core(mapping)
 
-    def _get_matching_out_of_core(self, mapping):
+    def _get_matching_out_of_core(self, mapping) -> List[Tuple[Dict[str, Union[int, float, str]], List[os.PathLike]]]:
         try:
             self._file_pattern.getMatching(mapping)
 
@@ -46,7 +46,7 @@ class PatternObject:
         except ValueError as e:
             print(e)
 
-    def _get_matching_block(self) -> list:
+    def _get_matching_block(self) -> List[Tuple[Dict[str, Union[int, float, str]], List[os.PathLike]]]:
         """
         Returns block of mathing files of size less than or equal to block_size.
 
@@ -60,7 +60,7 @@ class PatternObject:
         except ValueError as e:
             print(e)
 
-    def get_occurrences(self, mapping):
+    def get_occurrences(self, mapping) -> Dict[str, Dict[Union[int, float, str], int]]:
         """
         Returns the unique values for each variable along with the number of occurrences for each value.
 
@@ -74,7 +74,7 @@ class PatternObject:
 
         return self._file_pattern.getOccurrences(mapping)
 
-    def get_unique_values(self, vec) -> list:
+    def get_unique_values(self, vec) -> Dict[str, set[int, float, str]]:
         """Returns the unique values for each variable.
 
         This method returns a dictionary of provided variables to a list of all unique occurrences. If no variables are provided,
@@ -107,17 +107,17 @@ class PatternObject:
 
         return self._file_pattern.outputName(files)
     
-    def __len__(self):
+    def __len__(self) -> int:
         
         return self._file_pattern.length()
     
-    def get_variables(self):
+    def get_variables(self) -> List[str]:
         
         return self._file_pattern.getVariables()
 
     def __call__(self, group_by="") -> Union[List[Tuple[List[Tuple[str, Union[str, int, float]]], List[Tuple[Dict[str, Union[int, float, str]], List[os.PathLike]]]]], 
                                             Tuple[Dict[str, Union[int, float, str]], List[os.PathLike]]]:
-        """Iterate thorugh files parsed using a filepattern
+        """Iterate through files parsed using a filepattern
 
         This method returns an iterable of filenames matched to the filepattern. If
         a group_by variable is provided, lists of files where the variable is held constant are
@@ -146,7 +146,7 @@ class PatternObject:
 
         return self
 
-    def _length(self):
+    def _length(self) -> int:
         return self._file_pattern.currentBlockLength()
 
     def __iter__(self):
@@ -166,7 +166,17 @@ class PatternObject:
                 if self._length() == 0:
                     break
                 
-    def __getitem__(self, key):
+    def __getitem__(self, key) -> Union[List[Tuple[Dict[str, Union[int, float, str]], List[os.PathLike]]],
+                                    Tuple[Dict[str, Union[int, float, str]], List[os.PathLike]]]:
+        """_summary_
+
+        Args:
+            key (_type_): _description_
+
+        Returns:
+            _type_: _description_
+        """
+    
         if(type(key) == int): return self._file_pattern.getItem(key)
         if(type(key) == list): return self._file_pattern.getItemList(key)
         
@@ -233,7 +243,7 @@ class FilePattern(PatternObject):
 
         super().__init__(self._file_pattern, block_size)
 
-    def get_occurrences(self, **kwargs):
+    def get_occurrences(self, **kwargs) -> Dict[str, Dict[Union[int, float, str], int]]:
         """
         Returns the unique values for each variable along with the number of occurrences for each value.
 
@@ -251,7 +261,7 @@ class FilePattern(PatternObject):
 
         return super(FilePattern, self).get_occurrences(mapping)
 
-    def get_unique_values(self, *args) -> list:
+    def get_unique_values(self, *args) -> Dict[str, set[int, float, str]]:
         """Returns the unique values for each variable.
 
         This method returns a dictionary of provided variables to a list of all unique occurrences. If no variables are provided,
