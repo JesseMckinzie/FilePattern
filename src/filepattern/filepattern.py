@@ -8,7 +8,7 @@ class PatternObject:
         self._file_pattern = file_pattern
         self._block_size = block_size
 
-    def get_matching(self, **kwargs) -> List[Tuple[Dict[str, Union[int, float, str]], List[os.PathLike]]]:
+    def get_matching(self, kwargs) -> List[Tuple[Dict[str, Union[int, float, str]], List[os.PathLike]]]:
         
         """Get all filenames matching specific values
         
@@ -262,7 +262,7 @@ class FilePattern(PatternObject):
             pattern: Pattern to compare each filename to
             block_size: Maximum amount of RAM to consume at once. Defaults to "".
             recursive: Iterate over subdirectories. Defaults to False.
-            supress_warnings: True to suppress warning printed to console. Defaults to False.
+            suppress_warnings: True to suppress warning printed to console. Defaults to False.
         """
 
        
@@ -272,11 +272,18 @@ class FilePattern(PatternObject):
 
         super().__init__(self._file_pattern, block_size)
     
-    def get_matching(self, **kwargs) -> list:
+    def get_matching(self, **kwargs) -> List[Tuple[Dict[str, Union[int, float, str]], List[os.PathLike]]]:
+        
         """Get all filenames matching specific values
+        
+        This method will return a list containing all files where the variable matches the supplied. For example,
+        if the argument `x=1` is passed to get matching, all files where x is 1 will be returned. A list of values 
+        can also be passed, such as `x=[1,2,3]`. Futhermore, an arbitrary number of variables and values can be passed,
+        such as `x=1, y=2, z=3` or `x=[1,2,3], y=['a', 'b', 'c'], z=[4, 5, 6]`.
 
         Args:
-            **kwargs: One of the variables contained in the pattern
+            **kwargs: One or more keyword arguments where the key is a variable contained in the filepattern and 
+                    the value is a value for the variable
 
         Returns:
             List of matching files
@@ -337,3 +344,16 @@ class FilePattern(PatternObject):
         """
 
         return super().output_name(files)
+    
+    def get_variables(self) -> List[str]:
+        """ Returns a list of variables that are contained in the filepattern
+
+        For example, if the filepattern is `img_x{x:d}_y{y:d}_c{c:c+}.tif`, get_variables will return
+        the list `[x, y, c]`.
+            
+        Returns:
+            List containing the variables in the filepattern
+            
+        """
+
+        return super().get_variables()
