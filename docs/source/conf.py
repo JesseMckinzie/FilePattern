@@ -28,7 +28,7 @@ sys.setrecursionlimit(10000)
 
 # -- Project information -----------------------------------------------------
 
-project = 'filepattern2'
+project = 'filepattern'
 author = 'Jesse McKinzie'
 
 # -- General configuration ---------------------------------------------------

@@ -29,7 +29,7 @@ To have ``filepattern`` guess what the pattern is for a directory, the static me
 
 .. code-block:: python
 
-    import filepattern2 as fp 
+    import filepattern as fp 
 
     path = 'path/to/directory'
 
@@ -53,7 +53,7 @@ as shown below. A user specified custom pattern, such as the one below, or the g
 
 .. code-block:: python
 
-    import filepattern2 as fp
+    import filepattern as fp
     import pprint
 
     filepath = "path/to/directory"
@@ -102,7 +102,7 @@ In this case, the subdirectories are split by the channel. Recursive matching ca
 
 .. code-block:: python
 
-    import filepattern2 as fp
+    import filepattern as fp
     import pprint
 
     filepath = "path/to/root/directory"
@@ -145,7 +145,7 @@ the images can be returned in groups where ``r`` is held constant by passing the
 
 .. code-block:: python
 
-    import filepattern2 as fp
+    import filepattern as fp
     import pprint
 
     filepath = "path/to/directory"
@@ -209,7 +209,7 @@ The output is:
 Text files
 ~~~~~~~~~~
 
-``filepattern2`` can also take in a text file as an input rather than a directory. 
+``filepattern`` can also take in a text file as an input rather than a directory. 
 To use this functionality, a path to a text file is supplied to the ``path`` variable rather than a directory. 
 When a text file is passed as input, each line of the text file will be matched to the pattern. For example, a 
 text file containing containing the strings
@@ -257,7 +257,7 @@ After calling ``filepattern`` on a text file, also contains the [group_by](#grou
 Stitching Vectors
 ~~~~~~~~~~~~~~~~~
 
-``filepattern2`` can also take in stitching vectors as input. In this case, a path to a text file 
+``filepattern`` can also take in stitching vectors as input. In this case, a path to a text file 
 containing a stitching vector is passed to the ``path`` variable. A stitching vector has the following form,
 
 .. code-block:: bash
@@ -306,7 +306,7 @@ Out of Core
 
 
 
-``filepattern2`` has the ability to use external memory when the dataset is too large to fit in main memory, 
+``filepattern`` has the ability to use external memory when the dataset is too large to fit in main memory, 
 i.e. it utilizes disk memory along with RAM. It has the same functionality as ``filepattern``, however it takes in an 
 addition parameter called `block_size`, which limits the amount of main memory used by ``filepattern``. Consider a 
 directory containing the files:
@@ -322,7 +322,7 @@ This directory can be processed with only one file in memory as:
 
 .. code-block:: python
 
-    import filepattern2 as fp
+    import filepattern as fp
     import pprint
 
     filepath = "path/to/directory"
