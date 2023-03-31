@@ -8,11 +8,16 @@ class PatternObject:
         self._file_pattern = file_pattern
         self._block_size = block_size
 
-    def get_matching(self, **kwargs) -> list:
-        """Get all filenames matching specific values
+    def get_matching(self, kwargs) -> list:
+        """Get all filenames matching specified values for a variable.
+
+        This function takes in a variable of the key and a list of values for that variable 
+        as the value. The get_matching function will then return a list of files where 
+        the variable matches the values passed. 
 
         Args:
-            **kwargs: One of the variables contained in the pattern
+            **kwargs: One of the variables contained in the pattern as the key and a list 
+            of values for the variable as the value, e.g. x=[1,2,3]
 
         Returns:
             List of matching files
@@ -230,6 +235,18 @@ class FilePattern(PatternObject):
         self._file_pattern = backend.FilePattern(path, pattern, block_size, recursive, suppress_warnings)
 
         super().__init__(self._file_pattern, block_size)
+    
+    def get_matching(self, **kwargs) -> list:
+        """Get all filenames matching specific values
+
+        Args:
+            **kwargs: One of the variables contained in the pattern
+
+        Returns:
+            List of matching files
+        """
+
+        return super().get_matching(kwargs)
 
     def get_occurrences(self, **kwargs):
         """
