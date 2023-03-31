@@ -1,2 +1,2 @@
 include versioneer.py
-include src/filepattern2/_version.py
+include src/filepattern/_version.py

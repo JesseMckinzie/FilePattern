@@ -2,5 +2,5 @@
 Functions
 =========
 
-.. automodule:: filepattern2.functions
+.. automodule:: filepattern.functions
    :autosummary:
