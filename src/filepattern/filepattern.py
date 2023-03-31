@@ -116,7 +116,7 @@ class PatternObject:
 
     def __call__(self, group_by="") -> Union[List[Tuple[List[Tuple[str, Union[str, int, float]]], List[Tuple[Dict[str, Union[int, float, str]], List[os.PathLike]]]]], 
                                             Tuple[Dict[str, Union[int, float, str]], List[os.PathLike]]]:
-        """Iterate thorugh files parsed using a filepattern
+        """Iterate through files parsed using a filepattern
 
         This method returns an iterable of filenames matched to the filepattern. If
         a group_by variable is provided, lists of files where the variable is held constant are
@@ -215,7 +215,7 @@ class FilePattern(PatternObject):
         Just the path may be passed in the pattern is contained within the path. In this case,
         the names of the subdirectories are captured if they are named is the same manner as the pattern.
         For example, if just the path 'path/to/files/{channel: c+}/img_r{r:d+}_c{c:d+}.tif' is passed,
-        the names of the channel subfolders will be captured for each file.
+        the names of the channel subdirectories will be captured for each file.
 
         Args:
             path: Path to directory or text file
