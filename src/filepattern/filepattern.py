@@ -281,6 +281,39 @@ class FilePattern(PatternObject):
         can also be passed, such as `x=[1,2,3]`. Futhermore, an arbitrary number of variables and values can be passed,
         such as `x=1, y=2, z=3` or `x=[1,2,3], y=['a', 'b', 'c'], z=[4, 5, 6]`.
 
+        Example:
+
+            For a directory containing the files
+            ```
+                img_r001_c001_DAPI.tif
+                img_r002_c001_DAPI.tif
+                img_r001_c001_TXREAD.tif
+                img_r002_c001_TXREAD.tif
+                img_r001_c001_GFP.tif
+                img_r002_c001_GFP.tif
+            ```
+        
+            The `get_matching` method can be used as:
+
+            ```
+                path = /path/to/directory
+
+                pattern = 'img_r{r:ddd}_c{c:ddd}_{channel:c+}.tif'
+                
+                files = fp.FilePattern(path, pattern)
+
+                matching = files.get_matching(channel=['TXREAD'])
+            ```
+
+            the `matching` variable will be a list of matching files:
+
+            ```
+                [({'c': 1, 'channel': 'TXREAD', 'r': 1},
+                ['/home/ec2-user/Dev/FilePattern/data/example/img_r001_c001_TXREAD.tif']),
+                ({'c': 1, 'channel': 'TXREAD', 'r': 2},
+                ['/home/ec2-user/Dev/FilePattern/data/example/img_r002_c001_TXREAD.tif'])]
+            ```
+
         Args:
             **kwargs: One or more keyword arguments where the key is a variable contained in the filepattern and 
                     the value is a value for the variable
@@ -293,7 +326,12 @@ class FilePattern(PatternObject):
 
     def get_occurrences(self, **kwargs):
         """
-        Returns the unique values for each variable along with the number of occurrences for each value.
+        Takes in a variable as the key and a list of values as the value and returns the a dictionary
+        mapping the variable to a dictionary of the values mapped to the number of occurrences of the variable 
+        value.
+
+        For example, if the filepattern is `img_r{r:ddd}_c{r:ddd}.tif` and r=1 occurs 20 times in the path,
+        then the passing `r=[1]` will return `{'r': {1: 20}}`. 
 
         Args:
             **kwargs: Each keyword argument must be a variable. If no arguments are supplied, the occurrences
@@ -310,10 +348,12 @@ class FilePattern(PatternObject):
         return super(FilePattern, self).get_occurrences(mapping)
 
     def get_unique_values(self, *args) -> Dict[str, set[int, float, str]]:
-        """Returns the unique values for each variable.
+        """Given variable names from the filepattern as arguments, this method returns a dictionary 
+        of mapping the variable names to a set of the unique values for each variable. If no variables are 
+        provided, all variables will be returned.
 
-        This method returns a dictionary of provided variables to a list of all unique occurrences. If no variables are provided,
-        all variables will be returned.
+        For example if the filepattern is `img_r{r:ddd}_c{r:ddd}.tif` and `r` ranges from 1 to 3 and c ranges from 1 to 2,
+        then fp_object.get_unique_values('r', 'c') will return `{'r': {1,2,3}, 'c': {1,2}}`.
 
         Args:
             **args: Variables to get the occurrences of. All variables will be returned if no arguments are provided.
