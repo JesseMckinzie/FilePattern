@@ -1,7 +1,17 @@
 from . import backend
 import re
-
+#Reference/Functions
 def get_regex(filepattern: str, suppress_warnings=False) -> tuple:
+    """Returns the regex equivalent of the filepattern.
+
+    Args:
+        filepattern: A filepattern to get the regex equivalent of.
+        suppress_warnings: True to suppress warnings (Defaults False)
+
+    Returns:
+        String containing the regex equivalent of the filepattern
+
+    """
     result  = backend.FilePattern.getRegex(filepattern, suppress_warnings)
     return result[0:2]
 

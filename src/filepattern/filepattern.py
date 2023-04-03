@@ -8,8 +8,7 @@ class PatternObject:
         self._file_pattern = file_pattern
         self._block_size = block_size
 
-    def get_matching(self, kwargs) -> List[Tuple[Dict[str, Union[int, float, str]], List[os.PathLike]]]:
-        
+    def get_matching(self, kwargs) -> List[Tuple[Dict[str, Union[int, float, str]], List[os.PathLike]]]: 
         """Get all filenames matching specific values
         
         This method will return a list containing all files where the variable matches the supplied. For example,
