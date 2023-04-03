@@ -48,7 +48,7 @@ import filepattern as fp
 
 path = 'path/to/directory'
 
-pattern = fp.FilePattern.infer_pattern(path)
+pattern = fp.infer_pattern(path)
 
 print(pattern)
 
@@ -56,7 +56,7 @@ print(pattern)
 The result is:
 
 ```
-img_r00{r:d}_c00{c:d}_{t:c+}.tif
+img_r001_c001_{r:c+}.tif
 ``` 
 
 Note that the ``infer_pattern`` can also guess the patterns from stitching vectors and text files when a path to a text file is passed, rather than a path to a directory. 
