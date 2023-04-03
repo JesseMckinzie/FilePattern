@@ -20,6 +20,11 @@ def infer_pattern(
 ):
     """Returns a guess of a pattern given path to a directory of files or a list of files.
 
+    This function takes in either a path to a directory or a list of filenames  to provide a guess
+    of the filepattern. The optional argument `variables` will provide names for the variables.
+    If variable names are not given, default variable names will be used. If a `block_size` is 
+    specified, this method will only used the specified amount of RAM.
+
     Args:
         path: The path to a directory of files. Defaults to "".
         files: A list of files. Defaults to [].
