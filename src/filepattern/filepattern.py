@@ -87,7 +87,7 @@ class PatternObject:
 
         return self._file_pattern.getOccurrences(mapping)
 
-    def get_unique_values(self, vec: List[str]) -> Dict[str, Set[int, float, str]]:
+    def get_unique_values(self, vec: List[str]) -> Dict[str, Set[Union[int, float, str]]]:
         """Returns the unique values for each variable.
 
         This method returns a dictionary of provided variables to a list of all unique occurrences. If no variables are provided,
@@ -346,7 +346,7 @@ class FilePattern(PatternObject):
 
         return super(FilePattern, self).get_occurrences(mapping)
 
-    def get_unique_values(self, *args) -> Dict[str, Set[int, float, str]]:
+    def get_unique_values(self, *args) -> Dict[str, Set[Union[int, float, str]]]:
         """Given variable names from the filepattern as arguments, this method returns a dictionary 
         of mapping the variable names to a set of the unique values for each variable. If no variables are 
         provided, all variables will be returned.
