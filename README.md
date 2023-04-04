@@ -119,9 +119,9 @@ for file in files():
 The output of this case is:
 ```
 ({'c': 1, 'r': 1},
- ['path/to/root/direcotry/DAPI/img_r001_c001.tif',
-  'path/to/root/direcotry/GFP/img_r001_c001.tif',
-  'path/to/root/direcotry/TXREAD/img_r001_c001.tif'])
+ ['path/to/root/directory/DAPI/img_r001_c001.tif',
+  'path/to/root/directory/GFP/img_r001_c001.tif',
+  'path/to/root/directory/TXREAD/img_r001_c001.tif'])
 ```
 
 <h3 id="floating-point"> Floating Point Support </h3>
@@ -134,7 +134,7 @@ img_r2.05_c3.35.tif
 ```
 
 We can capture the values in a couple of different ways. Similar to capturing digits, the character `f` can be used to capture an element of a floating point number.
-Note that with this method, the demical point in the number must be captured by an `f`. For example, in the file `img_r0.05_c1.15.tif`, the floating point numbers would be capture with `ffff`.
+Note that with this method, the decimal point in the number must be captured by an `f`. For example, in the file `img_r0.05_c1.15.tif`, the floating point numbers would be capture with `ffff`.
 The code to utilize this method is
 
 ```python
@@ -286,7 +286,7 @@ for file in files():
 
 ```
 
-The ouput is:
+The output is:
 
 ```
 ({'c': 1, 'channel': 'DAPI', 'r': 1}, 
@@ -380,7 +380,7 @@ Note that the ``block_size`` argument is provided in bytes (B) in this example, 
 
 <h3 id="group-by-external"> Group by and get matching</h3>
 
-The out of core version of ``filepattern`` contains the same functionalities as the in memory versoin. ``group_by`` is called the same way, i.e.,
+The out of core version of ``filepattern`` contains the same functionalities as the in memory version. ``group_by`` is called the same way, i.e.,
 
 ```python
 for file in files(group_by="r"):
