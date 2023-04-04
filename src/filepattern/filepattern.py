@@ -323,7 +323,7 @@ class FilePattern(PatternObject):
 
         return super().get_matching(kwargs)
 
-    def get_occurrences(self, **kwargs):
+    def get_occurrences(self, mapping: List[Tuple[str, List[Union[int, float, str]]]]) -> Dict[str, Dict[Union[int, float, str], int]]:
         """
         Takes in a variable as the key and a list of values as the value and returns the a dictionary
         mapping the variable to a dictionary of the values mapped to the number of occurrences of the variable 
