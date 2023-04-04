@@ -163,17 +163,17 @@ The output is:
 .. code-block:: bash
 
    ('r': 1, [({'c': 1, 'channel': 'DAPI', 'file': 0, 'r': 1},
-    ['/home/ec2-user/Dev/FilePattern/data/example/img_r001_c001_DAPI.tif']),
+    ['/path/to/directory/img_r001_c001_DAPI.tif']),
     ({'c': 1, 'channel': 'TXREAD', 'file': 0, 'r': 1},
-    ['/home/ec2-user/Dev/FilePattern/data/example/img_r001_c001_TXREAD.tif']),
+    ['/path/to/directory/img_r001_c001_TXREAD.tif']),
     ({'c': 1, 'channel': 'GFP', 'file': 0, 'r': 1},
-    ['/home/ec2-user/Dev/FilePattern/data/example/img_r001_c001_GFP.tif'])])
+    ['/path/to/directory/img_r001_c001_GFP.tif'])])
    ('r': 2, [({'c': 1, 'channel': 'DAPI', 'file': 0, 'r': 2},
-    ['/home/ec2-user/Dev/FilePattern/data/example/img_r002_c001_DAPI.tif']),
+    ['/path/to/directory/img_r002_c001_DAPI.tif']),
     ({'c': 1, 'channel': 'GFP', 'file': 0, 'r': 2},
-    ['/home/ec2-user/Dev/FilePattern/data/example/img_r002_c001_GFP.tif']),
+    ['/path/to/directory/img_r002_c001_GFP.tif']),
     ({'c': 1, 'channel': 'TXREAD', 'file': 0, 'r': 2},
-    ['/home/ec2-user/Dev/FilePattern/data/example/img_r002_c001_TXREAD.tif'])])
+    ['/path/to/directory/img_r002_c001_TXREAD.tif'])])
 
 ~~~~~~~~~~~~
 Get Matching
@@ -184,7 +184,7 @@ For example, if only files from the TXREAD channel are needed, ``get_matching(ch
 
 .. code-block:: python
 
-    filepath = "/home/ec2-user/Dev/FilePattern/data/example"
+    filepath = "/path/to/directory"
 
     pattern = "img_r{r:ddd}_c{c:ddd}_{channel:c+}.tif"
 
@@ -201,9 +201,165 @@ The output is:
 .. code-block:: bash
 
     [({'c': 1, 'channel': 'TXREAD', 'r': 1},
-    ['/home/ec2-user/Dev/FilePattern/data/example/img_r001_c001_TXREAD.tif']),
+    ['/path/to/directory/img_r001_c001_TXREAD.tif']),
     ({'c': 1, 'channel': 'TXREAD', 'r': 2},
-    ['/home/ec2-user/Dev/FilePattern/data/example/img_r002_c001_TXREAD.tif'])]
+    ['/path/to/directory/img_r002_c001_TXREAD.tif'])]
+
+~~~~~~~~~~
+Output name
+~~~~~~~~~~
+The `output_name` method takes in a list of filenames, for example the output of the filepattern iterator, and returns a single filename that captures
+all variables from the list of files. If a variable is constant through the list, the variable value will be in the returned
+name. If a variable is not constant, the minimum and maximum values will appear in the returned name in
+the form "(min-max)". 
+
+For example, if the directory of files contains 
+
+.. code-block:: bash
+
+    img_r001_c001.tif
+    img_r001_c002.tif
+    img_r001_c003.tif
+
+The result of creating a `filepattern` object with the pattern `img_r{r:ddd}_c{c:ddd}.tif` and iterating over the files and appending them to a list will be 
+
+.. code-block:: bash
+
+    [({'c': 1, 'r': 1},
+    [PosixPath('/path/to/directory/img_r001_c001.tif')]),
+    ({'c': 2, 'r': 1},
+    [PosixPath('/path/to/directory/img_r001_c002.tif')]),
+    ({'c': 3, 'r': 1},
+    [PosixPath('/path/to/directory/img_r001_c003.tif')])]
+
+If this list is named `files`, then `output_name` can be used as:
+
+.. code-block:: python
+
+    name = fp_object.output_name(files)
+
+    print(name)
+
+The output is:
+
+.. code-block:: bash
+
+    img_r001_c(001-003).tif
+
+Note that this function currently only works on numeric differences in the files. If there are string differences, such as channel names,
+`output_name` will not work on the files.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Get unique values of variables
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+To get the values that occur for each of the variables in a file, the `get_unique_values`
+function is used. This function takes in variable names as string as the arguments and returns
+a dictionary mapping the variable name to a set containing the values of the variable.
+
+Consider the directory containing the files 
+
+.. code-block:: bash
+
+    img_r001_c001.tif
+    img_r001_c002.tif
+    img_r001_c003.tif
+
+with the filepattern `img_r{r:ddd}_c{c:ddd}.tif`. This filepattern contains two variables,
+`r` and `c`. Therefore, the `get_unique_values` function can take in `'r'`, `'c'`, or `'r', 'c'` 
+as the argument(s). If no arguments are passed, this will have an equivelant return values as 
+if all variables were passed to the function.
+
+.. code::python 
+
+    values = fp_object.get_unique_values('r', 'c')
+
+    print(values)
+
+The output is:
+
+.. code::bash 
+
+    {'c': {1, 2, 3}, 'r': {1}}
+
+As mentioned earlier, it is also possible to pass a subset of the available variables:
+
+.. code::python
+
+    values = fp_object.get_unique_values('c')
+
+    print(values)
+
+The output in this case is:
+
+.. code::bash 
+
+    {'c': {1, 2, 3}}
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Get unique values of each variable with the number of occurrences
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+This function takes in keyword arguments, where the key is a variable name and the value is a list of 
+values that the variable could have. The `get_occurrences` method will return a dictionary
+mapping the variable name to another dictionary where this dictionary contains the value of the variable
+mapped to the number of times the value occurs. 
+
+For example, if there is a directory containing the files 
+
+.. code::bash 
+    img_r001_c001_z001.tif
+    img_r001_c002_z001.tif
+    img_r001_c003_z002.tif
+
+Then `get_occurrences` can be used as:
+
+.. code::python 
+
+    path = '/path/to/directory'
+    pattern = 'img_r{r:ddd}_c{c:ddd}_z{z:ddd}.tif'
+
+    fp_object = fp.FilePattern(path, pattern)
+
+    occurrences = fp_object.get_occurrences(z=[1,2])
+
+    print(occurrences)
+
+The result will be 
+
+.. code::bash 
+
+    {'z': {1: 2, 2: 1}}
+
+Note that if no arguments are passed to this funciton, then all variables mapped
+to all values will be returned. 
+
+If a variable or value is passed that is not matched, then the value will be zero.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Get variables from a filepattern
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+To get the variables that are contained in a `filepattern`, the `get_variables` method is used.
+This method takes in no arguments and returns a list of strings containing the variable names from
+the `filepattern`. For example, 
+
+.. code::python
+
+    path = '/path/to/directory'
+    pattern = 'img_r{r:ddd}_c{c:ddd}.tif'
+
+    fp_object = fp.FilePattern(path, pattern)
+
+    variables = fp_object.get_variables()
+
+    print(variables)
+
+the output will be 
+
+.. code::bash
+
+    ['r', 'c']
 
 ~~~~~~~~~~
 Text files
@@ -341,11 +497,11 @@ The output from this example is:
 .. code-block:: bash
 
     ({'c': 1, 'channel': 'DAPI', 'r': 1},
-    ['/home/ec2-user/Dev/FilePattern/data/example/img_r001_c001_DAPI.tif'])
+    ['/path/to/directory/img_r001_c001_DAPI.tif'])
     ({'c': 1, 'channel': 'TXREAD', 'r': 1},
-    ['/home/ec2-user/Dev/FilePattern/data/example/img_r001_c001_TXREAD.tif'])
+    ['/path/to/directory/img_r001_c001_TXREAD.tif'])
     ({'c': 1, 'channel': 'GFP', 'r': 1},
-    ['/home/ec2-user/Dev/FilePattern/data/example/img_r001_c001_GFP.tif'])
+    ['/path/to/directory/img_r001_c001_GFP.tif'])
 
 Note that the ``block_size`` argument is provided in bytes (B) in this example, but also has the options 
 for kilobytes (KB), megabytes (MB), and gigabytes (GB). The ``block_size`` must be under 1000 GB.
@@ -377,7 +533,7 @@ where the output is returned in blocks of ``block_size``. The output is:
 .. code-block:: bash
 
     ({'c': 1, 'channel': 'TXREAD', 'r': 1},
-    ['/home/ec2-user/Dev/FilePattern/data/example/img_r001_c001_TXREAD.tif'])
+    ['/path/to/directory/img_r001_c001_TXREAD.tif'])
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
