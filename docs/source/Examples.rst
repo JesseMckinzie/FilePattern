@@ -2,12 +2,12 @@
 Examples
 ========
 
-FilePattern iterates over a directory, text file, or stitching vector, matching filenames to a suplied ``filepattern``. 
+FilePattern iterates over a directory, text file, or stitching vector, matching filenames to a supplied ``filepattern``. 
 
 When only a path to a directory and a pattern are supplied to the constructor of ``filepattern``, ``filepattern`` 
 will iterate over the directory, matching the filenames in the directory to the ``filepattern``. The  ``filepattern`` 
 can either be supplied by  the user or can be found using the ``infer_pattern`` method of ``filepattern``. 
-For example, consider a direcotry containing the following files, 
+For example, consider a directory containing the following files, 
 
 
 .. code-block:: bash
@@ -18,11 +18,11 @@ For example, consider a direcotry containing the following files,
 
 
 n each of these filenames, there are three descriptors of the image: the row, the column, and the channel. To match 
-these files, the pattern ``img_r{r:ddd}_c{c:ddd}_{channel:c+}`` can be used. In this pattern, the nameed groups are 
+these files, the pattern ``img_r{r:ddd}_c{c:ddd}_{channel:c+}`` can be used. In this pattern, the named groups are 
 contained within the curly brackets, where the variable name is before the colon and the value is after the colon. 
 For the value, the descriptors ``d`` and ``c`` are used, which represent a digit and a character, respectively. 
-In the example pattern, three `d`'s are used to catpure three digits. The ``+`` after ``c`` denotes that one or 
-more characters will be captured, which is equivelant to ``[a-zA-z]+`` in a regular expression. The ``+`` symbol 
+In the example pattern, three `d`'s are used to capture three digits. The ``+`` after ``c`` denotes that one or 
+more characters will be captured, which is equivalent to ``[a-zA-z]+`` in a regular expression. The ``+`` symbol 
 may be used after either ``d`` or ``c``. 
 
 To have ``filepattern`` guess what the pattern is for a directory, the static method ``infer_pattern`` can be used:
@@ -49,7 +49,7 @@ Note that the ``infer_pattern`` can also guess the patterns from stitching vecto
 file is passed, rather than a path to a directory. 
 
 To retrieve files from a directory that match the ``filepattern``, an iterator is called on the `FilePattern` object, 
-as shown below. A user specified custom pattern, such as the one below, or the guessed pattern can beas input in the constructor.
+as shown below. A user specified custom pattern, such as the one below, or the guessed pattern can be used as input in the constructor.
 
 .. code-block:: python
 
@@ -70,11 +70,11 @@ The output is:
 .. code-block:: bash
 
     ({'c': 1, 'channel': 'DAPI', 'r': 1},
-    ['path/to/direcotry/img_r001_c001_DAPI.tif'])
+    ['path/to/directory/img_r001_c001_DAPI.tif'])
     ({'c': 1, 'channel': 'TXREAD', 'r': 1},
-    ['path/to/direcotry/img_r001_c001_TXREAD.tif'])
+    ['path/to/directory/img_r001_c001_TXREAD.tif'])
     ({'c': 1, 'channel': 'GFP', 'r': 1},
-    ['path/to/direcotry/img_r001_c001_GFP.tif'])
+    ['path/to/directory/img_r001_c001_GFP.tif'])
 
 
 As shown in this example, the output is a tuple where the first member is a map between the group name supplied in the 
@@ -120,9 +120,9 @@ The output of this case is:
 .. code-block:: bash
 
     ({'c': 1, 'r': 1},
-    ['path/to/root/direcotry/DAPI/img_r001_c001.tif',
-    'path/to/root/direcotry/GFP/img_r001_c001.tif',
-    'path/to/root/direcotry/TXREAD/img_r001_c001.tif'])
+    ['path/to/root/directory/DAPI/img_r001_c001.tif',
+    'path/to/root/directory/GFP/img_r001_c001.tif',
+    'path/to/root/directory/TXREAD/img_r001_c001.tif'])
 
 ~~~~~~~~
 Group By
@@ -267,7 +267,7 @@ Consider the directory containing the files
 
 with the filepattern `img_r{r:ddd}_c{c:ddd}.tif`. This filepattern contains two variables,
 `r` and `c`. Therefore, the `get_unique_values` function can take in `'r'`, `'c'`, or `'r', 'c'` 
-as the argument(s). If no arguments are passed, this will have an equivelant return values as 
+as the argument(s). If no arguments are passed, this will have an equivalent return values as 
 if all variables were passed to the function.
 
 .. code::python 
@@ -331,7 +331,7 @@ The result will be
 
     {'z': {1: 2, 2: 1}}
 
-Note that if no arguments are passed to this funciton, then all variables mapped
+Note that if no arguments are passed to this function, then all variables mapped
 to all values will be returned. 
 
 If a variable or value is passed that is not matched, then the value will be zero.
@@ -395,7 +395,7 @@ can be matched to the pattern ``img_r{r:ddd}_c{c:ddd}_{channel:c+}.tif`` with:
 
 
 
-The ouput is:
+The output is:
 
 .. code-block:: bash
 
@@ -460,8 +460,6 @@ captures the variables supplied in the stitching vector.
 Out of Core
 ~~~~~~~~~~~
 
-
-
 ``filepattern`` has the ability to use external memory when the dataset is too large to fit in main memory, 
 i.e. it utilizes disk memory along with RAM. It has the same functionality as ``filepattern``, however it takes in an 
 addition parameter called `block_size`, which limits the amount of main memory used by ``filepattern``. Consider a 
@@ -507,7 +505,7 @@ Note that the ``block_size`` argument is provided in bytes (B) in this example, 
 for kilobytes (KB), megabytes (MB), and gigabytes (GB). The ``block_size`` must be under 1000 GB.
 
 
-The out of core version of ``filepattern`` contains the same functionalities as the in memory versoin. ``group_by`` is 
+The out of core version of ``filepattern`` contains the same functionalities as the in memory version. ``group_by`` is 
 called the same way, i.e.,
 
 .. code-block:: python
