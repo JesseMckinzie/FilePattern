@@ -33,7 +33,7 @@ To have ``filepattern`` guess what the pattern is for a directory, the static me
 
     path = 'path/to/directory'
 
-    pattern = fp.FilePattern.infer_pattern(filepath)
+    pattern = fp.infer_pattern(filepath)
 
     print(pattern)
 
