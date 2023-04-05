@@ -17,7 +17,7 @@ class PatternObject:
         such as `x=1, y=2, z=3` or `x=[1,2,3], y=['a', 'b', 'c'], z=[4, 5, 6]`.
 
         Args:
-            **kwargs: One or more keyword arguments where the key is a variable contained in the filepattern and 
+            kwargs: One or more keyword arguments where the key is a variable contained in the filepattern and 
                     the value is a value for the variable
 
         Returns:
